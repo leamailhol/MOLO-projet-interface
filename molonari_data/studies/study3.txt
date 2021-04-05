@@ -1,0 +1,3 @@
+study3
+D:/Documents/Cours/2A/Molonari/Interface/molonari_data/studies
+D:/Documents/Cours/2A/Molonari/Interface/molonari_data/sensors
