@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>11</x>
@@ -68,7 +68,7 @@
       <item row="2" column="0" colspan="2">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Raw Pression :</string>
+         <string>Raw Pressure :</string>
         </property>
        </widget>
       </item>
