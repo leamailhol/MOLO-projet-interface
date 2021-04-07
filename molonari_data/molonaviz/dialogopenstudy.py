@@ -19,7 +19,6 @@ class DialogOpenStudy(QtWidgets.QDialog,From_DialogOpenStudy):
         
     def browseStudy(self):
         dirPath = QtWidgets.QFileDialog.getOpenFileName(self, "Select Study")
-        print(dirPath[0])
         if dirPath:
             self.lineEditStudy.setText(dirPath[0]) 
 
