@@ -6,6 +6,7 @@ from dialogopenstudy import DialogOpenStudy
 from dialogcreatestudy import DialogCreateStudy
 
 From_MainWindow,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"mainwindow.ui"))
+
 class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
     def __init__(self):
         # Call constructor of parent classes
