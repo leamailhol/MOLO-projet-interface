@@ -48,6 +48,9 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
 
     def importPoint(self):
         dlg = openPoint() 
+        for i in range(self.sensorModel.rowCount()) :
+            sensor_name = self.sensorModel.item(i).text() 
+            dlg.comboBox_Sensor.addItem(text = sensor_name)
         res = dlg.exec()
         if (res == QtWidgets.QDialog.Accepted) :
             self.currentPoint = dlg.getPoint()
