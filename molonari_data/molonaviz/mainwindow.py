@@ -18,6 +18,7 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
         
         self.actionCreate_Study.triggered.connect(self.createStudy)
         self.actionOpen_Study.triggered.connect(self.openStudy)
+        self.actionImport_Point.triggered.connect(self.importPoint)
         
         self.sensorModel = QtGui.QStandardItemModel()
         self.treeViewSensors.setModel(self.sensorModel)
@@ -38,6 +39,12 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
             self.currentStudy = dlg.getStudy()
             self.currentStudy.loadSensors(self.sensorModel)
 
+    def importPoint(self):
+        dlg = ImportPointDialog() 
+        res = dlg.exec()
+        if res == QtWidgets.QDialog.Accepted :
+            #blablah
+            
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
