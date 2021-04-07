@@ -28,8 +28,8 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
             self.lineEdit_RawPressure.setText(dirPath)
 
     def getPoint(self):
-        name = self.lineEditName.text()
+        name = self.lineEdit_PointName.text()
         rawTemp = self.lineEdit_RawTemperature.text()
         rawPressure = self.lineEdit_RawPressure.text()
-        sensor = self.comboBox_Sensor.text()
+        sensor = self.comboBox_Sensor.currentText()
         return Point(name,sensor,rawTemp, rawPressure)

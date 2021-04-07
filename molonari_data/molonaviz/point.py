@@ -1,5 +1,6 @@
 import os
 from PyQt5 import QtGui, QtCore
+import shutil
 
 class Point(object):
     
@@ -8,6 +9,10 @@ class Point(object):
         self.sensor = sensor
         self.rawTemp = rawTemp
         self.rawPres = rawPres
+
+    def loadPoint(self, pointModel) :
+        item = QtGui.QStandardItem(self.name)
+        pointModel.appendRow(item)
 
     def savePoint(self, study):
 

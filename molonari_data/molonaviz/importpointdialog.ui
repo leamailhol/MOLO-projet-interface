@@ -73,7 +73,7 @@
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QLineEdit" name="lineEdit_RawPression"/>
+       <widget class="QLineEdit" name="lineEdit_RawPressure"/>
       </item>
       <item row="2" column="3" colspan="2">
        <widget class="QPushButton" name="pushButton_BrowseRawPressure">
@@ -83,7 +83,7 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QLineEdit" name="lineEdit_PoinName"/>
+       <widget class="QLineEdit" name="lineEdit_PointName"/>
       </item>
      </layout>
     </item>

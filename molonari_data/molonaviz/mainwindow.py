@@ -4,7 +4,8 @@ from PyQt5 import QtWidgets, QtGui, QtCore, uic
 from study import Study
 from dialogopenstudy import DialogOpenStudy
 from dialogcreatestudy import DialogCreateStudy
-from openpoint import openPoint
+from importpointdialog import ImportPointDialog
+
 
 From_MainWindow,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"mainwindow.ui"))
 
@@ -47,7 +48,7 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
             self.currentPoint.savePoint(self.currentStudy)
 
     def importPoint(self):
-        dlg = openPoint() 
+        dlg = ImportPointDialog() 
         for i in range(self.sensorModel.rowCount()) :
             sensor_name = self.sensorModel.item(i).text() 
             dlg.comboBox_Sensor.addItem(text = sensor_name)
