@@ -4,6 +4,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore, uic
 from study import Study
 from dialogopenstudy import DialogOpenStudy
 from dialogcreatestudy import DialogCreateStudy
+from importpointdialog import ImportPointDialog
 
 From_MainWindow,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"mainwindow.ui"))
 
@@ -29,6 +30,7 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
         res = dlg.exec()
         if (res == QtWidgets.QDialog.Accepted) :
             self.currentStudy = dlg.getStudy()
+
             self.currentStudy.loadSensors(self.sensorModel)
             self.currentStudy.saveStudy()
         
@@ -36,16 +38,18 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
         # TODO : create and show DialogOpenStudy, then intialiaze a new study
         dlg = DialogOpenStudy() # Could be renamed DialogCreateStudy
         res = dlg.exec()
-        if (res == QtWidgets.QDialog.Accepted) :
-            self.currentStudy = dlg.getStudy()
-            self.currentStudy.loadSensors(self.sensorModel)
+ 
+       if (res == QtWidgets.QDialog.Accepted) :
+            
 
     def importPoint(self):
         dlg = ImportPointDialog() 
         res = dlg.exec()
         if res == QtWidgets.QDialog.Accepted :
-            #blablah
+            self.currentStudy = dlg.getStudy()
+            self.currentStudy.loadSensors(self.sensorModel)
             
+
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
