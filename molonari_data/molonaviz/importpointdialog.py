@@ -18,14 +18,14 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
         self.pushButton_BrowseRawPressure.clicked.connect(self.browseRawPres)
         
     def browseRawTemp(self):
-        dirPath = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Raw Temperature")
+        dirPath = QtWidgets.QFileDialog.getOpenFileName(self, "Select Raw Temperature")
         if dirPath:
-            self.lineEdit_RawTemperature.setText(dirPath) 
+            self.lineEdit_RawTemperature.setText(dirPath[0]) 
             
     def browseRawPres(self):
-        dirPath = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Raw Pressure")
+        dirPath = QtWidgets.QFileDialog.getOpenFileName(self, "Select Raw Pressure")
         if dirPath:
-            self.lineEdit_RawPressure.setText(dirPath)
+            self.lineEdit_RawPressure.setText(dirPath[0])
 
     def getPoint(self):
         name = self.lineEdit_PointName.text()

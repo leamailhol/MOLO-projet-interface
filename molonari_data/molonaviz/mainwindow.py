@@ -45,17 +45,18 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
         if (res == QtWidgets.QDialog.Accepted) :
             self.currentStudy = dlg.getStudy()
             self.currentStudy.loadSensors(self.sensorModel)
-            self.currentPoint.savePoint(self.currentStudy)
+            
 
     def importPoint(self):
         dlg = ImportPointDialog() 
         for i in range(self.sensorModel.rowCount()) :
             sensor_name = self.sensorModel.item(i).text() 
-            dlg.comboBox_Sensor.addItem(text = sensor_name, userData = QtCore.Qt.UserRole)
+            dlg.comboBox_Sensor.addItem(sensor_name)
         res = dlg.exec()
         if (res == QtWidgets.QDialog.Accepted) :
             self.currentPoint = dlg.getPoint()
             self.currentPoint.loadPoint(self.pointModel)
+            self.currentPoint.savePoint(self.currentStudy)
             
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
