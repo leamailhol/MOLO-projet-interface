@@ -4,6 +4,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore, uic
 from study import Study
 from dialogopenstudy import DialogOpenStudy
 from dialogcreatestudy import DialogCreateStudy
+from openpoint import openPoint
 
 From_MainWindow,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"mainwindow.ui"))
 class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
@@ -15,13 +16,17 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
         self.setupUi(self)
 
         self.currentStudy = None
-        
+        self.currentPoint = None
+
         self.actionCreate_Study.triggered.connect(self.createStudy)
         self.actionOpen_Study.triggered.connect(self.openStudy)
         self.actionImport_Point.triggered.connect(self.importPoint)
         
         self.sensorModel = QtGui.QStandardItemModel()
         self.treeViewSensors.setModel(self.sensorModel)
+
+        self.pointModel = QtGui.QStandardItemModel()
+        self.treeViewPoint.setModel(self.pointModel)
         
     def createStudy(self):
         dlg = DialogCreateStudy() # Could be renamed DialogCreateStudy
@@ -40,12 +45,12 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
             self.currentStudy.loadSensors(self.sensorModel)
 
     def importPoint(self):
-        dlg = ImportPointDialog() 
+        dlg = openPoint() 
         res = dlg.exec()
-        if res == QtWidgets.QDialog.Accepted :
-            #blablah
+        if (res == QtWidgets.QDialog.Accepted) :
+            self.currentPoint = dlg.getPoint()
+            self.currentPoint.loadPoint(self.pointModel)
             
-
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     mainWin = MainWindow()

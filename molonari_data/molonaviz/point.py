@@ -8,3 +8,4 @@ class Point(object):
         self.sensor = sensor
         self.rawTemp = rawTemp
         self.rawPres = rawPres
+
