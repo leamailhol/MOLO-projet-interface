@@ -44,6 +44,7 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
         if (res == QtWidgets.QDialog.Accepted) :
             self.currentStudy = dlg.getStudy()
             self.currentStudy.loadSensors(self.sensorModel)
+            self.currentPoint.savePoint(self.currentStudy)
 
     def importPoint(self):
         dlg = openPoint() 

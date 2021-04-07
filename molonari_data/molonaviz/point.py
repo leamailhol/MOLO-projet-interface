@@ -9,3 +9,11 @@ class Point(object):
         self.rawTemp = rawTemp
         self.rawPres = rawPres
 
+    def savePoint(self, study):
+
+        os.chdir(study.rootDir)
+        os.mkdir(study.rootDir+'/'+self.name)
+
+        shutil.copyfile(self.rawTemp, study.rootDir+'rawTemp-'+self.name+'.csv')
+        shutil.copyfile(self.rawPres, study.rootDir+'rawPres-'+self.name+'.csv')
+
