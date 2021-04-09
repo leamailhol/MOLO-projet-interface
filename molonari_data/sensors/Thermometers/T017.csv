@@ -1,0 +1,4 @@
+Shaft_Name,S005, String,
+Datalogger, string,
+T_Sensor_Name,T017, string,
+Sensors_Depth,[0.2,0.4], list of floats (unité m),

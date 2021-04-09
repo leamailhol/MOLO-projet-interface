@@ -26,9 +26,8 @@ class Study(object):
         dirs = os.listdir(sdir)
 
         press = dirs[0]
-        temp = dirs[1]
-        shaft = dirs[2]
-
+        temp = dirs[2]
+        shaft = dirs[1]
 
         #capteurs de pression
 
@@ -37,7 +36,6 @@ class Study(object):
         item_press = QtGui.QStandardItem(press) 
         item_press.setData(sensortype, QtCore.Qt.UserRole)
         sensorModel.appendRow(item_press) #on ajoute une ligne à l'arbre
-
 
         sdir2 = os.path.join(sdir, press)
         dirs2 = os.listdir(sdir2)
@@ -109,24 +107,21 @@ class Study(object):
 
         press = dirs[0]
          
-        pathCalib = os.path.join(self.sensorDir, press, sensorName, "calibfit_{}.csv".format(sensorName))
+        pathCalib = os.path.join(self.sensorDir, press, sensorName)
         file = open(pathCalib,"r")
         lines = file.readlines()
         for line in lines:
             if line.split(';')[0].strip() == "Intercept":
                 sensor.intercept = line.split(';')[1].strip()
-            if line.split(';')[0].strip() == "dU/dH":
+            if line.split(';')[0].strip() == "dU_dH":
                 sensor.dudh = line.split(';')[1].strip()
-            if line.split(';')[0].strip() == "dU/dT":
+            if line.split(';')[0].strip() == "dU_dT":
                 sensor.dudt = line.split(';')[1].strip()
         return sensor
 
     def loadTemperatureSensor(self, sensorName):
         sdir = self.sensorDir
         dirs = os.listdir(sdir)
-
-        temp = dirs[1]
-         
         sensor = temperatureSensor(sensorName)
         return sensor
 
@@ -136,9 +131,9 @@ class Study(object):
         sdir = self.sensorDir
         dirs = os.listdir(sdir)
 
-        shaft = dirs[2]
+        shaft = dirs[1]
          
-        pathCalib = os.path.join(self.sensorDir, shaft, sensorName, "calibfit_{}.csv".format(sensorName))
+        pathCalib = os.path.join(self.sensorDir, shaft, sensorName)
         file = open(pathCalib,"r")
         lines = file.readlines()
         for line in lines:
@@ -155,10 +150,10 @@ class Study(object):
         rawPres = self.rootDir+'/'+name+'/'+'imp_raw_pressure.csv'
         config = self.rootDir+'/'+name+'/'+'imp_config.png'
         notice = self.rootDir+'/'+name+'/'+'imp_notice.csv'
-        file = open(info,"r",encoding='utf-8-sig')
+        file = open(info,"r")
         lines = file.readlines()
         for line in lines:
-            parts = line.split(',')
+            parts = line.split(';')
             if parts[0].strip() == "P_Sensor_Name":
                 sensor = parts[1].strip()
             if parts[0].strip() == "Shaft_Name":
