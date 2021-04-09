@@ -1,4 +1,6 @@
 from sensor import Sensor
+from point import Point
+
 import os
 from PyQt5 import QtGui, QtCore
 
@@ -42,7 +44,35 @@ class Study(object):
             if line.split(';')[0].strip() == "dU/dT":
                 sensor.dudt = line.split(';')[1].strip()
         return sensor
-    
+
+    def loadPoint(self, pointName):
+        name = pointName
+        info = self.rootDir+'/'+name+'/'+'imp_notice.csv'
+        rawTemp = self.rootDir+'/'+name+'/'+'imp_raw_temperature.csv'
+        rawPres = self.rootDir+'/'+name+'/'+'imp_raw_pressure.csv'
+        config = self.rootDir+'/'+name+'/'+'imp_config.png'
+        notice = self.rootDir+'/'+name+'/'+'imp_notice.csv'
+        file = open(info,"r",encoding='utf-8-sig')
+        lines = file.readlines()
+        for line in lines:
+            parts = line.split(',')
+            if parts[0].strip() == "P_Sensor_Name":
+                sensor = parts[1].strip()
+            if parts[0].strip() == "Shaft_Name":
+                shaft = parts[1].strip()
+                return Point(name,info,sensor, shaft, rawTemp, rawPres, config, notice)
+
+    def loadPoints(self, pointModel):
+        pointModel.clear()
+        dirs = os.listdir(self.rootDir)
+        for mydir in dirs:
+            _, ext = os.path.splitext(mydir)
+            if ext != '.txt' :
+                item = QtGui.QStandardItem(mydir)
+                pointModel.appendRow(item)
+                point = self.loadPoint(mydir)
+                item.setData(point, QtCore.Qt.UserRole)
+
     def saveStudy(self):
         os.chdir(self.rootDir)
         f = open(f"{self.name}.txt","w+")

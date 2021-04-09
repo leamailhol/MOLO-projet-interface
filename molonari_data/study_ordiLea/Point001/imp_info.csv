@@ -1,0 +1,7 @@
+﻿Point_Name,Point001, String ou Int ?,
+P_Sensor_Name,P009, String,
+Shaft_Name,S042, String,
+Implementation_Date, “YYYY/MM/DD hh:mm:ss”, string,
+Meas_Date, “YYYY/MM/DD hh:mm:ss”, string,
+River_bed, float (unité m),
+Delta_h, float (unité m),
