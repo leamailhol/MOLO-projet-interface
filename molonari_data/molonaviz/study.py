@@ -44,7 +44,8 @@ class Study(object):
 
             sensor = self.loadPressureSensor(mydir) 
             
-            item = QtGui.QStandardItem(mydir)
+            no_ext, ext = os.path.splitext(mydir)
+            item = QtGui.QStandardItem(no_ext)
             item.setData(sensor, QtCore.Qt.UserRole)
             item_press.appendRow(item)
 
@@ -65,8 +66,8 @@ class Study(object):
         for mydir in dirs3 :
 
             sensor = self.loadTemperatureSensor(mydir)
-                
-            item = QtGui.QStandardItem(mydir)
+            no_ext, ext = os.path.splitext(mydir)
+            item = QtGui.QStandardItem(no_ext) 
             item.setData(sensor, QtCore.Qt.UserRole)
             item_temp.appendRow(item)
         
@@ -85,8 +86,8 @@ class Study(object):
         for mydir in dirs4 : 
 
             sensor = self.loadTemperatureShaft(mydir)
-            
-            item = QtGui.QStandardItem(mydir)
+            no_ext, ext = os.path.splitext(mydir)
+            item = QtGui.QStandardItem(no_ext)
             item.setData(sensor, QtCore.Qt.UserRole)
             item_shaft.appendRow(item)
 
@@ -138,9 +139,9 @@ class Study(object):
         lines = file.readlines()
         for line in lines:
             if line.split(';')[0].strip() == "T_Sensor_Name":
-                sensor.intercept = line.split(';')[1].strip()
+                sensor.t_sensor_name = line.split(';')[1].strip()
             if line.split(';')[0].strip() == "Sensors_Depth":
-                sensor.dudh = line.split(';')[1].strip()
+                sensor.sensors_depth = line.split(';')[1].strip()
         return sensor
 
     def loadPoint(self, pointName):
@@ -150,7 +151,7 @@ class Study(object):
         rawPres = self.rootDir+'/'+name+'/'+'imp_raw_pressure.csv'
         config = self.rootDir+'/'+name+'/'+'imp_config.png'
         notice = self.rootDir+'/'+name+'/'+'imp_notice.csv'
-        file = open(info,"r")
+        file = open(info,"r",encoding = 'utf-8-sig')
         lines = file.readlines()
         for line in lines:
             parts = line.split(';')

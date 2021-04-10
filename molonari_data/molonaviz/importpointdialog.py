@@ -24,10 +24,10 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
         dirPath, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Select Point Information")
         self.info = dirPath
         if dirPath:
-            file = open(dirPath,"r",encoding='utf-8-sig')
+            file = open(dirPath,"r",encoding = 'utf-8-sig')
             lines = file.readlines()
             for line in lines:
-                parts = line.split(',')
+                parts = line.split(';')
                 if parts[0].strip() == "Point_Name":
                     self.lineEdit_PointName.setText(parts[1].strip())
                 if parts[0].strip() == "P_Sensor_Name":
