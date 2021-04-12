@@ -6,8 +6,35 @@ import pandas as pd
 from study import Study
 From_DataPointView,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"datapointview.ui"))
 from csv import reader
+import matplotlib.pyplot as plt 
 #path_point = 'C:/Users/Léa/Documents/MINES 2A/MOLONARI/INTERFACE/MOLO-projet-interface/molonari_data/study_ordiLea/Point001'
 #os.chdir(path_point)
+
+def plot_temperature(df): 
+
+    fig = plt.figure(figsize=(12,4))
+    plt.plot(df['Date'],df['T sensor 1'], label='10.0 cm')
+    plt.plot(df['Date'],df['T sensor 2'], label='20.0 cm')
+    plt.plot(df['Date'],df['T sensor 3'], label='30.0 cm')
+    plt.plot(df['Date'],df['T sensor 4'], label='40.0 cm')
+    plt.legend()
+    plt.xlabel('Date')
+    plt.ylabel('Temperature')
+    name = 'plot_temperature.png'
+    plt.savefig(name)
+
+    return(name)
+
+def plot_pressure(df): 
+
+    fig1 = plt.figure(figsize=(12,4))
+    print(df['Tension'])
+    plt.plot(df['Date'],df['Tension'])
+    plt.plot(df['Date'],df['Temperature'])
+    plt.xlabel('Date')
+    plt.ylabel('Tension/Temperature')
+    name = 'plot_pressure.png'
+    plt.savefig(name)
 
 class pandasModel(QtCore.QAbstractTableModel):
 
@@ -105,6 +132,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         #self.dataTemperature = self.dataTemperature.drop(['A','B','C'],axis=1)
         data_to_display_temp = pandasModel(self.dataTemperature)
         self.tableViewTemperature.setModel(data_to_display_temp)
+        print(self.dataTemperature.columns)
         
         #col_temp = ['Index','Date','Tension','Température','A','B','C']
         col_press = ['Date','Tension','Temperature']
@@ -113,8 +141,15 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         #self.dataTemperature = self.dataTemperature.drop(['A','B','C'],axis=1)
         data_to_display_press = pandasModel(self.dataPressure_unprocessed)
         self.tableViewPressure.setModel(data_to_display_press)
-        
-    
+        print(self.dataPressure_unprocessed.columns)
+
+        self.plot_temperature = QtGui.QPixmap(plot_temperature(self.dataTemperature))
+        self.labelPlotTemp.setPixmap(self.plot_temperature)
+
+        self.plot_pressure = QtGui.QPixmap(plot_pressure(self.dataPressure_unprocessed))
+        self.labelPlotPressure.setPixmap(self.plot_pressure)
+
+
     def reset(self):
         print('reset')
     
