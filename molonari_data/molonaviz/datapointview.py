@@ -3,11 +3,11 @@ import os
 from PyQt5 import QtWidgets, uic, QtCore
 from point import Point
 import pandas as pd 
-
+from study import Study
 From_DataPointView,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"datapointview.ui"))
 
-path_point = '../molonari_data/study_ordiMaëlle/point1'
-os.chdir(path_point)
+#path_point = 'C:/Users/Léa/Documents/MINES 2A/MOLONARI/INTERFACE/MOLO-projet-interface/molonari_data/study_ordiLea/Point001'
+#os.chdir(path_point)
 
 class pandasModel(QtCore.QAbstractTableModel):
 
@@ -33,15 +33,13 @@ class pandasModel(QtCore.QAbstractTableModel):
         return None
 
 class DataPointView(QtWidgets.QDialog,From_DataPointView):
-    def __init__(self):
+    def __init__(self,path_point):
         # Call constructor of parent classes
         super(DataPointView, self).__init__()
         QtWidgets.QDialog.__init__(self)
-        
+        self.path_point = path_point
+        os.chdir(path_point)
         self.setupUi(self)
-
-        self.currentPoint = None
-
 
         self.pushButtonReset.clicked.connect(self.reset)
 
@@ -49,10 +47,11 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
 
         self.pushButtonCompute.clicked.connect(self.compute)
 
-        col_temp = ['Index','Date','Tension','Température','A','B','C']
-        self.dataTemperature = pd.read_csv('rawTemp-point1.csv', encoding='latin-1', sep=',', low_memory=False, skiprows=1)
+        #col_temp = ['Index','Date','Tension','Température','A','B','C']
+        col_temp = ['Date','Tension','Température']
+        self.dataTemperature = pd.read_csv('imp_raw_pressure.csv', encoding='latin-1', sep=';', low_memory=False, skiprows=1)
         self.dataTemperature.columns = col_temp
-        self.dataTemperature = self.dataTemperature.drop(['A','B','C'],axis=1)
+        #self.dataTemperature = self.dataTemperature.drop(['A','B','C'],axis=1)
 
         print(self.dataTemperature)
         print(self.dataTemperature.columns)
@@ -75,24 +74,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
     def compute(self):
         print('compute')
     
+
     
-    
-
-
-
-
-
-        
-      
-
-
-
-
 
    
-if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-    mainWin = DataPointView()
-
-    mainWin.show()
-    sys.exit(app.exec_())

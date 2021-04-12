@@ -5,7 +5,7 @@ from study import Study
 from dialogopenstudy import DialogOpenStudy
 from dialogcreatestudy import DialogCreateStudy
 from importpointdialog import ImportPointDialog
-
+from datapointview import DataPointView
 
 From_MainWindow,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"mainwindow.ui"))
 
@@ -19,6 +19,7 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
 
         self.currentStudy = None
         self.currentPoint = None
+        self.clickedPoint = None
 
         self.actionCreate_Study.triggered.connect(self.createStudy)
         self.actionOpen_Study.triggered.connect(self.openStudy)
@@ -29,7 +30,8 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
 
         self.pointModel = QtGui.QStandardItemModel()
         self.treeViewPoint.setModel(self.pointModel)
-        
+        self.treeViewPoint.doubleClicked.connect(self.openPoint)
+
     def createStudy(self):
         dlg = DialogCreateStudy() # Could be renamed DialogCreateStudy
         res = dlg.exec()
@@ -61,6 +63,11 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
             self.currentPoint = dlg.getPoint()
             self.currentPoint.loadPoint(self.pointModel)
             self.currentPoint.savePoint(self.currentStudy)
+
+    def openPoint(self,index):
+        self.clickedPoint = index.data()
+        datapointview = DataPointView(f'{self.currentStudy.rootDir}/{self.clickedPoint}')
+        datapointview.exec()
             
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
