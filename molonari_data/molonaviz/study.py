@@ -151,16 +151,17 @@ class Study(object):
         rawPres = self.rootDir+'/'+name+'/'+'imp_raw_pressure.csv'
         config = self.rootDir+'/'+name+'/'+'imp_config.png'
         notice = self.rootDir+'/'+name+'/'+'imp_notice.csv'
+        point = Point(name,info,rawTemp = rawTemp, rawPres = rawPres, config = config, notice = notice)
         file = open(info,"r",encoding = 'utf-8-sig')
         lines = file.readlines()
         for line in lines:
             parts = line.split(';')
             if parts[0].strip() == "P_Sensor_Name":
-                sensor = parts[1].strip()
+                point.sensor = parts[1].strip()
             if parts[0].strip() == "Shaft_Name":
-                shaft = parts[1].strip()
-                return Point(name,info,sensor, shaft, rawTemp, rawPres, config, notice)
-
+                point.shaft = parts[1].strip()
+        return point
+        
     def loadPoints(self, pointModel):
         pointModel.clear()
         dirs = os.listdir(self.rootDir)
@@ -168,9 +169,12 @@ class Study(object):
             _, ext = os.path.splitext(mydir)
             if ext != '.txt' :
                 item = QtGui.QStandardItem(mydir)
-                pointModel.appendRow(item)
                 point = self.loadPoint(mydir)
+                print(point.name)
                 item.setData(point, QtCore.Qt.UserRole)
+                print(item.data(QtCore.Qt.UserRole))
+                pointModel.appendRow(item)
+                
 
     def saveStudy(self):
         os.chdir(self.rootDir)
