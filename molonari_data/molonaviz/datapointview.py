@@ -146,8 +146,8 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.plot_temperature = QtGui.QPixmap(plot_temperature(self.dataTemperature))
         self.labelPlotTemp.setPixmap(self.plot_temperature)
 
-        self.plot_pressure = QtGui.QPixmap(plot_pressure(self.dataPressure_unprocessed))
-        self.labelPlotPressure.setPixmap(self.plot_pressure)
+        #self.plot_pressure = QtGui.QPixmap(plot_pressure(self.dataPressure_unprocessed))
+        #self.labelPlotPressure.setPixmap(self.plot_pressure)
 
 
     def reset(self):
