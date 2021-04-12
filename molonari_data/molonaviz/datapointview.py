@@ -97,9 +97,9 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.pushButtonCompute.clicked.connect(self.compute)
 
         
-        col_temp = ['Date','Tension','Température']
-        self.dataTemperature = pd.read_csv('imp_raw_pressure.csv', encoding='latin-1', sep=';', low_memory=False, skiprows=1)
-        self.dataTemperature.columns = col_temp
+        #col_temp = ['Date','Tension','Température']
+        self.dataTemperature = pd.read_csv('imp_raw_temperature.csv', encoding='latin-1', sep=';', low_memory=False)
+        #self.dataTemperature.columns = col_temp
         
 
         print(self.dataTemperature)
