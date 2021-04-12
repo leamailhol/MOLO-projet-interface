@@ -1,10 +1,11 @@
 import os
 from PyQt5 import QtGui, QtCore
 import shutil
+from numpy import NaN
 
 class Point(object):
     
-    def __init__(self, name,info, sensor, shaft, rawTemp, rawPres, config, notice):
+    def __init__(self, name,info=NaN, sensor=NaN, shaft=NaN, rawTemp=NaN, rawPres=NaN, config=NaN, notice=NaN):
         self.name = name
         self.pressure_sensor = sensor
         self.shaft = shaft
@@ -13,6 +14,7 @@ class Point(object):
         self.rawPres = rawPres
         self.config = config
         self.notice = notice 
+        self.path = None 
 
     def loadPoint(self, pointModel) :
         item = QtGui.QStandardItem(self.name)

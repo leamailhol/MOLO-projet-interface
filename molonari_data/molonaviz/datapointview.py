@@ -33,13 +33,14 @@ class pandasModel(QtCore.QAbstractTableModel):
         return None
 
 class DataPointView(QtWidgets.QDialog,From_DataPointView):
-    def __init__(self,path_point):
+    def __init__(self,point,currentStudy):
         # Call constructor of parent classes
         super(DataPointView, self).__init__()
         QtWidgets.QDialog.__init__(self)
-        self.path_point = path_point
-        os.chdir(path_point)
+        self.path_point = point.path
+        os.chdir(self.path_point)
         self.setupUi(self)
+        self.currentStudy = currentStudy
 
         # On paramètre le premier onglet
 
@@ -97,22 +98,22 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.pushButtonCompute.clicked.connect(self.compute)
 
         
-        #col_temp = ['Date','Tension','Température']
-        self.dataTemperature = pd.read_csv('imp_raw_temperature.csv', encoding='utf8', sep=';', low_memory=False)
-        #self.dataTemperature.columns = col_temp
+        #col_temp = ['Index','Date','Tension','Température','A','B','C']
+        col_temp = ['Date','T sensor 1','T sensor 2', 'T sensor 3', 'T sensor 4']
+        self.dataTemperature = pd.read_csv('imp_raw_temperature.csv', encoding='utf-8', sep=';', low_memory=False, skiprows=0)
+        self.dataTemperature.columns = col_temp
+        #self.dataTemperature = self.dataTemperature.drop(['A','B','C'],axis=1)
+        data_to_display_temp = pandasModel(self.dataTemperature)
+        self.tableViewTemperature.setModel(data_to_display_temp)
         
-
-        print(self.dataTemperature)
-        print(self.dataTemperature.columns)
-        print(len(self.dataTemperature.columns))
-        data_to_display = pandasModel(self.dataTemperature)
-
-        self.tableViewTemperature.setModel(data_to_display)
+        #col_temp = ['Index','Date','Tension','Température','A','B','C']
+        col_press = ['Date','Tension','Temperature']
+        self.dataPressure_unprocessed = pd.read_csv('imp_raw_pressure.csv', encoding='utf-8', sep=';', low_memory=False, skiprows=0)
+        self.dataPressure_unprocessed.columns = col_press
+        #self.dataTemperature = self.dataTemperature.drop(['A','B','C'],axis=1)
+        data_to_display_press = pandasModel(self.dataPressure_unprocessed)
+        self.tableViewPressure.setModel(data_to_display_press)
         
-
-
-
-
     
     def reset(self):
         print('reset')

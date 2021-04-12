@@ -65,12 +65,15 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
             self.currentPoint.savePoint(self.currentStudy)
 
     def openPoint(self,index):
-        self.clickedPoint = index.data()
-        datapointview = DataPointView(f'{self.currentStudy.rootDir}/{self.clickedPoint}')
+        item = self.pointModel.itemFromIndex(index)
+        self.clickedPoint = item.data(QtCore.Qt.UserRole)
+        print(self.clickedPoint.name)
+        self.clickedPoint.path = f'{self.currentStudy.rootDir}/{self.clickedPoint.name}'
+        datapointview = DataPointView(self.clickedPoint,self.currentStudy)
+        datapointview.setObjectName(self.clickedPoint.name)
         self.mdiArea.addSubWindow(datapointview)    
         datapointview.show()
-
-        
+    
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     mainWin = MainWindow()
