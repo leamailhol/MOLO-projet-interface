@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>456</width>
-    <height>362</height>
+    <width>706</width>
+    <height>340</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,49 +15,49 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
       <widget class="QCheckBox" name="checkBox">
        <property name="text">
         <string>Show Raw Data</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="1">
       <widget class="QPushButton" name="pushButtonReset">
        <property name="text">
         <string>Reset</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="2">
       <widget class="QLabel" name="labelSensor">
        <property name="text">
         <string>Point</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="3">
       <widget class="QComboBox" name="comboBoxSensor"/>
      </item>
-     <item>
+     <item row="0" column="4">
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Last Date: </string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="5">
       <widget class="QComboBox" name="comboBoxDate"/>
      </item>
-     <item>
+     <item row="0" column="6">
       <widget class="QPushButton" name="pushButtonCleanup">
        <property name="text">
         <string>Cleanup...</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="7">
       <widget class="QPushButton" name="pushButtonCompute">
        <property name="text">
         <string>Compute...</string>
@@ -69,14 +69,14 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabInfo">
       <attribute name="title">
        <string>Infos</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0">
           <widget class="QLabel" name="label_4">
@@ -100,7 +100,7 @@
          </item>
         </layout>
        </item>
-       <item>
+       <item row="1" column="0">
         <widget class="QLabel" name="label_6">
          <property name="text">
           <string>Installation</string>
@@ -110,7 +110,7 @@
          </property>
         </widget>
        </item>
-       <item>
+       <item row="2" column="0">
         <widget class="QScrollArea" name="scrollArea">
          <property name="widgetResizable">
           <bool>true</bool>
@@ -118,10 +118,10 @@
          <widget class="QWidget" name="scrollAreaWidgetContents">
           <property name="geometry">
            <rect>
-            <x>-100</x>
+            <x>0</x>
             <y>0</y>
-            <width>757</width>
-            <height>537</height>
+            <width>767</width>
+            <height>547</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">

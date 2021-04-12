@@ -6,40 +6,84 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>526</width>
-    <height>341</height>
+    <width>1077</width>
+    <height>855</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MolonaViz</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QDockWidget" name="dockPoint">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>274</width>
-      <height>505</height>
+      <x>3</x>
+      <y>3</y>
+      <width>929</width>
+      <height>491</height>
      </rect>
     </property>
-    <property name="windowTitle">
-     <string>Points</string>
-    </property>
-    <widget class="QWidget" name="dockWidgetContents_2">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QTreeView" name="treeViewPoint">
-        <property name="styleSheet">
-         <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 65, 153, 255), stop:1 rgba(255, 255, 255, 255));</string>
-        </property>
-        <attribute name="headerVisible">
-         <bool>false</bool>
-        </attribute>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+    <layout class="QGridLayout" name="gridLayout_7">
+     <item row="0" column="1">
+      <widget class="QMdiArea" name="mdiArea"/>
+     </item>
+     <item row="0" column="0">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QDockWidget" name="dockSensors">
+         <property name="styleSheet">
+          <string notr="true">
+</string>
+         </property>
+         <property name="windowTitle">
+          <string>Sensors</string>
+         </property>
+         <widget class="QWidget" name="dockWidgetContents">
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <widget class="QTreeView" name="treeViewSensors">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <attribute name="headerVisible">
+              <bool>false</bool>
+             </attribute>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDockWidget" name="dockPoint">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="windowTitle">
+          <string>Points</string>
+         </property>
+         <widget class="QWidget" name="dockWidgetContents_2">
+          <layout class="QGridLayout" name="gridLayout_5">
+           <item row="0" column="0">
+            <widget class="QTreeView" name="treeViewPoint">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
+             <attribute name="headerVisible">
+              <bool>false</bool>
+             </attribute>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -47,8 +91,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>526</width>
-     <height>18</height>
+     <width>1077</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuStudy">
@@ -69,28 +113,6 @@
    <addaction name="menuPoint"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QDockWidget" name="dockSensors">
-   <property name="windowTitle">
-    <string>Sensors</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QTreeView" name="treeViewSensors">
-       <property name="styleSheet">
-        <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 65, 153, 255), stop:1 rgba(255, 255, 255, 255));</string>
-       </property>
-       <attribute name="headerVisible">
-        <bool>false</bool>
-       </attribute>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>
   <action name="actionCreate_Study">
    <property name="text">
     <string>Create Study</string>
