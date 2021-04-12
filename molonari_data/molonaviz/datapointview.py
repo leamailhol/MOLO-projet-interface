@@ -6,7 +6,7 @@ import pandas as pd
 
 From_DataPointView,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"datapointview.ui"))
 
-path_point = 'D:/Documents/Cours/2A/Molonari/Interface/Molo_test/molonari_data/study_ordiMaëlle/point1'
+path_point = '../molonari_data/study_ordiMaëlle/point1'
 os.chdir(path_point)
 
 class pandasModel(QtCore.QAbstractTableModel):
