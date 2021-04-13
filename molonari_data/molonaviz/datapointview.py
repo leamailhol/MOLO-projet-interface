@@ -7,6 +7,8 @@ from study import Study
 From_DataPointView,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"datapointview.ui"))
 from csv import reader
 import matplotlib.pyplot as plt 
+from sensor import pressureSensor
+import numpy as np
 #path_point = 'C:/Users/Léa/Documents/MINES 2A/MOLONARI/INTERFACE/MOLO-projet-interface/molonari_data/study_ordiLea/Point001'
 #os.chdir(path_point)
 
@@ -60,14 +62,16 @@ class pandasModel(QtCore.QAbstractTableModel):
         return None
 
 class DataPointView(QtWidgets.QDialog,From_DataPointView):
-    def __init__(self,point,currentStudy):
+    def __init__(self,point,currentStudy,sensorModel):
         # Call constructor of parent classes
         super(DataPointView, self).__init__()
         QtWidgets.QDialog.__init__(self)
         self.path_point = point.path
+        self.point = point
         os.chdir(self.path_point)
         self.setupUi(self)
         self.currentStudy = currentStudy
+        self.sensorModel = sensorModel
 
         # On paramètre le premier onglet
 
@@ -113,7 +117,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.plainTextEditGeometry.appendPlainText(text_geometry)
         self.plainTextEditGeometry.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
 
-        ## Schéma 
+        ## Info
 
         self.InstallationImage.setPixmap(QtGui.QPixmap('imp_config.png'))
 
@@ -132,16 +136,33 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         #self.dataTemperature = self.dataTemperature.drop(['A','B','C'],axis=1)
         data_to_display_temp = pandasModel(self.dataTemperature)
         self.tableViewTemperature.setModel(data_to_display_temp)
-        print(self.dataTemperature.columns)
         
-        #col_temp = ['Index','Date','Tension','Température','A','B','C']
         col_press = ['Date','Tension','Temperature']
         self.dataPressure_unprocessed = pd.read_csv('imp_raw_pressure.csv', encoding='utf-8', sep=';', low_memory=False, skiprows=0)
-        self.dataPressure_unprocessed.columns = col_press
+        self.dataPressure_unprocessed.columns = col_press 
+        sensordir = self.currentStudy.sensorDir
+        dirs = os.listdir(sensordir)
+        press = dirs[0]
+        pathCalib = os.path.join(sensordir, press, f'{str(self.point.pressure_sensor)}.csv')
+        file = open(pathCalib,"r")
+        lines = file.readlines()
+        intercept = None
+        dudh = None 
+        dudt = None 
+        for line in lines:
+            if line.split(';')[0].strip() == "Intercept":
+                intercept = line.split(';')[1].strip()
+            if line.split(';')[0].strip() == "dU_dH":
+                dudh = line.split(';')[1].strip()
+            if line.split(';')[0].strip() == "dU_dT":
+                dudt = line.split(';')[1].strip()
+        df = self.dataPressure_unprocessed
+        df = df.dropna()
+        df = df.astype({'Temperature': np.float})
+        #df['Pressure'] = (df['Tension']-intercept-dudt*df['Temperature'])/dudh
         #self.dataTemperature = self.dataTemperature.drop(['A','B','C'],axis=1)
-        data_to_display_press = pandasModel(self.dataPressure_unprocessed)
+        data_to_display_press = pandasModel(df)
         self.tableViewPressure.setModel(data_to_display_press)
-        print(self.dataPressure_unprocessed.columns)
 
         self.plot_temperature = QtGui.QPixmap(plot_temperature(self.dataTemperature))
         self.labelPlotTemp.setPixmap(self.plot_temperature)
