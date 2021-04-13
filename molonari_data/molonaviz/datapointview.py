@@ -151,15 +151,15 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         dudt = None 
         for line in lines:
             if line.split(';')[0].strip() == "Intercept":
-                intercept = line.split(';')[1].strip()
+                intercept = float(line.split(';')[1].strip())
             if line.split(';')[0].strip() == "dU_dH":
-                dudh = line.split(';')[1].strip()
+                dudh = float(line.split(';')[1].strip())
             if line.split(';')[0].strip() == "dU_dT":
-                dudt = line.split(';')[1].strip()
+                dudt = float(line.split(';')[1].strip())
         df = self.dataPressure_unprocessed
         df = df.dropna()
-        df = df.astype({'Temperature': np.float})
-        #df['Pressure'] = (df['Tension']-intercept-dudt*df['Temperature'])/dudh
+        df = df.astype({'Temperature': np.float,'Tension': np.float})
+        df['Pressure'] = (df['Tension']-intercept-dudt*df['Temperature'])/dudh
         #self.dataTemperature = self.dataTemperature.drop(['A','B','C'],axis=1)
         data_to_display_press = pandasModel(df)
         self.tableViewPressure.setModel(data_to_display_press)
