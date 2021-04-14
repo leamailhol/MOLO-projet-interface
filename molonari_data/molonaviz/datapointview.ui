@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>706</width>
-    <height>340</height>
+    <height>537</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,6 +16,16 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="2">
+      <widget class="QLabel" name="labelSensor">
+       <property name="text">
+        <string>Point</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QComboBox" name="comboBoxSensor"/>
+     </item>
      <item row="0" column="0">
       <widget class="QCheckBox" name="checkBox">
        <property name="text">
@@ -30,30 +40,10 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="labelSensor">
-       <property name="text">
-        <string>Point</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QComboBox" name="comboBoxSensor"/>
-     </item>
      <item row="0" column="4">
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Last Date: </string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="5">
-      <widget class="QComboBox" name="comboBoxDate"/>
-     </item>
-     <item row="0" column="6">
-      <widget class="QPushButton" name="pushButtonCleanup">
-       <property name="text">
-        <string>Cleanup...</string>
        </property>
       </widget>
      </item>
@@ -64,12 +54,22 @@
        </property>
       </widget>
      </item>
+     <item row="0" column="6">
+      <widget class="QPushButton" name="pushButtonCleanup">
+       <property name="text">
+        <string>Cleanup...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="5">
+      <widget class="QComboBox" name="comboBoxDate"/>
+     </item>
     </layout>
    </item>
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabInfo">
       <attribute name="title">
@@ -121,7 +121,7 @@
             <x>0</x>
             <y>0</y>
             <width>763</width>
-            <height>543</height>
+            <height>240</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -135,9 +135,6 @@
              </property>
              <property name="text">
               <string/>
-             </property>
-             <property name="pixmap">
-              <pixmap>../data/desc_point41_11_07_17/systeme_41.png</pixmap>
              </property>
             </widget>
            </item>
@@ -153,7 +150,11 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
-        <widget class="QTableView" name="tableViewTemperature"/>
+        <widget class="QTableView" name="tableViewTemperature">
+         <attribute name="verticalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -161,16 +162,15 @@
       <attribute name="title">
        <string>Pressure</string>
       </attribute>
-      <widget class="QTableView" name="tableViewPressure">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>664</width>
-         <height>247</height>
-        </rect>
-       </property>
-      </widget>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="0">
+        <widget class="QTableView" name="tableViewPressure">
+         <attribute name="verticalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tabPlot">
       <attribute name="title">
@@ -188,7 +188,7 @@
             <x>0</x>
             <y>0</y>
             <width>662</width>
-            <height>245</height>
+            <height>442</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
