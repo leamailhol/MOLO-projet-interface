@@ -19,6 +19,7 @@ class Point(object):
     def loadPoint(self, pointModel) :
         item = QtGui.QStandardItem(self.name)
         pointModel.appendRow(item)
+        item.setData(self, QtCore.Qt.UserRole)
 
     def savePoint(self, study):
         os.chdir(study.rootDir)
