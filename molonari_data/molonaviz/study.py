@@ -146,7 +146,7 @@ class Study(object):
 
     def loadPoint(self, pointName):
         name = pointName
-        info = self.rootDir+'/'+name+'/'+'imp_notice.csv'
+        info = self.rootDir+'/'+name+'/'+'imp_info.csv'
         rawTemp = self.rootDir+'/'+name+'/'+'imp_raw_temperature.csv'
         rawPres = self.rootDir+'/'+name+'/'+'imp_raw_pressure.csv'
         config = self.rootDir+'/'+name+'/'+'imp_config.png'
@@ -157,7 +157,7 @@ class Study(object):
         for line in lines:
             parts = line.split(';')
             if parts[0].strip() == "P_Sensor_Name":
-                point.sensor = parts[1].strip()
+                point.pressure_sensor = parts[1].strip()
             if parts[0].strip() == "Shaft_Name":
                 point.shaft = parts[1].strip()
         return point
@@ -170,9 +170,7 @@ class Study(object):
             if ext != '.txt' :
                 item = QtGui.QStandardItem(mydir)
                 point = self.loadPoint(mydir)
-                print(point.name)
                 item.setData(point, QtCore.Qt.UserRole)
-                print(item.data(QtCore.Qt.UserRole))
                 pointModel.appendRow(item)
                 
 

@@ -67,9 +67,8 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
     def openPoint(self,index):
         item = self.pointModel.itemFromIndex(index)
         self.clickedPoint = item.data(QtCore.Qt.UserRole)
-        print(self.clickedPoint.name)
         self.clickedPoint.path = f'{self.currentStudy.rootDir}/{self.clickedPoint.name}'
-        datapointview = DataPointView(self.clickedPoint,self.currentStudy)
+        datapointview = DataPointView(self.clickedPoint,self.currentStudy,self.sensorModel)
         datapointview.setObjectName(self.clickedPoint.name)
         self.mdiArea.addSubWindow(datapointview)    
         datapointview.show()

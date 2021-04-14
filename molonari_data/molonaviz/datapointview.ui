@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>447</width>
+    <width>706</width>
     <height>340</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_6">
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <layout class="QGridLayout" name="gridLayout_3">
      <item row="0" column="0">
       <widget class="QCheckBox" name="checkBox">
@@ -66,13 +66,10 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
+   <item>
     <widget class="QTabWidget" name="tabWidget">
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabInfo">
       <attribute name="title">
@@ -91,7 +88,7 @@
          <item row="0" column="1">
           <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>Geometry</string>
+            <string>Info : </string>
            </property>
           </widget>
          </item>
@@ -123,8 +120,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>757</width>
-            <height>537</height>
+            <width>763</width>
+            <height>543</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -161,21 +158,19 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tabPressure">
-      <property name="autoFillBackground">
-       <bool>true</bool>
-      </property>
       <attribute name="title">
        <string>Pressure</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_7">
-       <item row="0" column="0">
-        <widget class="QTableView" name="tableViewPressure">
-         <property name="autoFillBackground">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QTableView" name="tableViewPressure">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>664</width>
+         <height>247</height>
+        </rect>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="tabPlot">
       <attribute name="title">
@@ -192,8 +187,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>415</width>
-            <height>266</height>
+            <width>662</width>
+            <height>245</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
