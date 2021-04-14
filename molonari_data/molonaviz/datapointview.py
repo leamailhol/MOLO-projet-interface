@@ -9,6 +9,9 @@ from csv import reader
 import matplotlib.pyplot as plt 
 from sensor import pressureSensor
 import numpy as np
+from dialogcleanup import DialogCleanUp
+from numpy import NaN
+
 #path_point = 'C:/Users/Léa/Documents/MINES 2A/MOLONARI/INTERFACE/MOLO-projet-interface/molonari_data/study_ordiLea/Point001'
 #os.chdir(path_point)
 
@@ -149,7 +152,12 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         print('reset')
     
     def cleanup(self):
-        print('cleanup')
+        clnp = DialogCleanUp() 
+        mycleanupcode = clnp.getCode()
+        res = clnp.exec()
+        if (res == QtWidgets.QDialog.Accepted) :
+            
+            clnp.saveCleanedUpData(mycleanupcode)
 
     def compute(self):
         print('compute')
