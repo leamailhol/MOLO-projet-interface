@@ -1,16 +1,45 @@
-import sys
 import os
-from PyQt5 import QtWidgets, uic, QtCore, QtGui
 from point import Point
 import pandas as pd 
 from study import Study
-From_DataPointView,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"datapointview.ui"))
 from csv import reader
-import matplotlib.pyplot as plt 
 from sensor import pressureSensor
 import numpy as np
+
+
+import sys
+import matplotlib
+matplotlib.use('Qt5Agg')
+
+from PyQt5 import QtCore, QtWidgets, QtGui, uic, QtWidgets
+
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
+
+From_DataPointView,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"datapointview.ui"))
+
+
 #path_point = 'C:/Users/Léa/Documents/MINES 2A/MOLONARI/INTERFACE/MOLO-projet-interface/molonari_data/study_ordiLea/Point001'
 #os.chdir(path_point)
+# Create processed temperatures plot
+
+class TimeSeriesPlotCanvas(FigureCanvasQTAgg):
+
+    def __init__(self, title='Temperature (K)', indices = [2,3,4,5], width=5, height=4, dpi=100):
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        self.title = title
+        self.indices = indices 
+        self.axes = fig.add_subplot(111)
+        super(TimeSeriesPlotCanvas, self).__init__(fig)
+
+
+    def setModel(self, df):
+
+        self.dataFrameTime = df['Date']
+        self.dataFrameTemp = df['']
+
+
+
 
 def plot_temperature(df): 
 
@@ -164,11 +193,22 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         data_to_display_press = pandasModel(df)
         self.tableViewPressure.setModel(data_to_display_press)
 
-        self.plot_temperature = QtGui.QPixmap(plot_temperature(self.dataTemperature))
-        self.labelPlotTemp.setPixmap(self.plot_temperature)
+
+        self.plotViewTemp = TimeSeriesPlotCanvas("Temperature(K)", [2,3,4,5]) # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
+        self.plotViewTemp.setModel(data_to_display_temp)
+        self.plotViewTemp.plot()
+
+        #self.plot_temperature = QtGui.QPixmap(plot_temperature(self.dataTemperature))
+        #self.labelPlotTemp.setPixmap(self.plot_temperature)
 
         #self.plot_pressure = QtGui.QPixmap(plot_pressure(self.dataPressure_unprocessed))
         #self.labelPlotPressure.setPixmap(self.plot_pressure)
+
+        
+
+# Add to container widget
+
+        self.layoutTempMeasures.addWidget(self.plotViewTemp)
 
 
     def reset(self):
