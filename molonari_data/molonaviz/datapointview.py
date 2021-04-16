@@ -8,10 +8,12 @@ import numpy as np
 from pyheatmy import *
 
 
+
 import sys
 import matplotlib
-import matplotlib.backends.backend_qt5agg as matplotback
-#matplotlib.use('Qt5Agg')
+
+matplotlib.use('Qt5Agg')
+
 
 from PyQt5 import QtCore, QtWidgets, QtGui, uic, QtWidgets
 
@@ -23,11 +25,12 @@ from numpy import NaN
 from computedialog import ComputeDialog
 
 
+
 #path_point = 'C:/Users/Léa/Documents/MINES 2A/MOLONARI/INTERFACE/MOLO-projet-interface/molonari_data/study_ordiLea/Point001'
 #os.chdir(path_point)
 # Create processed temperatures plot
 
-class TimeSeriesPlotCanvas(matplotback.FigureCanvasQTAgg):
+class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvas):
 
     def __init__(self, title, y_name, indexes, labels):
 
@@ -38,7 +41,8 @@ class TimeSeriesPlotCanvas(matplotback.FigureCanvasQTAgg):
         self.ylab = y_name
         self.lab = labels
 
-        matplotback.FigureCanvasQTAgg.__init__(self,self.fig)
+        matplotlib.backends.backend_qt5agg.FigureCanvas.__init__(self,self.fig)
+
 
 
     def setModel(self, model):
@@ -163,7 +167,6 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.dataPressure = pd.read_csv('processed_pressure.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
         data_to_display_press = pandasModel(self.dataPressure)
         self.tableViewPressure.setModel(data_to_display_press)
-
 
         #self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", [1,2,3,4], ['10cm', '20cm','30cm','40cm']) # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
         #self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
