@@ -184,17 +184,21 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
-        <widget class="QLabel" name="labelPlotTemp">
-         <property name="text">
-          <string/>
+        <widget class="QScrollArea" name="scrollArea_2">
+         <property name="widgetResizable">
+          <bool>true</bool>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="labelPlotPressure">
-         <property name="text">
-          <string/>
-         </property>
+         <widget class="QWidget" name="widgetPlot">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>415</width>
+            <height>266</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="layoutMeasuresTemp"/>
+         </widget>
         </widget>
        </item>
       </layout>
