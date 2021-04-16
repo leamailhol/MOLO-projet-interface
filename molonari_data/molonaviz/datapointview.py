@@ -1,47 +1,64 @@
-import sys
 import os
-from PyQt5 import QtWidgets, uic, QtCore, QtGui
 from point import Point
 import pandas as pd 
 from study import Study
-From_DataPointView,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"datapointview.ui"))
 from csv import reader
-import matplotlib.pyplot as plt 
 from sensor import pressureSensor
 import numpy as np
+from pyheatmy import *
+
+
+import sys
+import matplotlib
+import matplotlib.backends.backend_qt5agg as matplotback
+#matplotlib.use('Qt5Agg')
+
+from PyQt5 import QtCore, QtWidgets, QtGui, uic, QtWidgets
+
+From_DataPointView,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"datapointview.ui"))
+
+
 from dialogcleanup import DialogCleanUp
 from numpy import NaN
 from computedialog import ComputeDialog
-from pyheatmy import *
+
 
 #path_point = 'C:/Users/Léa/Documents/MINES 2A/MOLONARI/INTERFACE/MOLO-projet-interface/molonari_data/study_ordiLea/Point001'
 #os.chdir(path_point)
+# Create processed temperatures plot
 
-def plot_temperature(df): 
+class TimeSeriesPlotCanvas(matplotback.FigureCanvasQTAgg):
 
-    fig = plt.figure(figsize=(12,4))
-    plt.plot(df['Date'],df['T sensor 1'], label='10.0 cm')
-    plt.plot(df['Date'],df['T sensor 2'], label='20.0 cm')
-    plt.plot(df['Date'],df['T sensor 3'], label='30.0 cm')
-    plt.plot(df['Date'],df['T sensor 4'], label='40.0 cm')
-    plt.legend()
-    plt.xlabel('Date')
-    plt.ylabel('Temperature')
-    name = 'plot_temperature.png'
-    plt.savefig(name)
+    def __init__(self, title, y_name, indexes, labels):
 
-    return(name)
+        self.fig = matplotlib.figure.Figure()
+        self.title = title
+        self.indexes = indexes
+        self.axes = self.fig.add_subplot(111)
+        self.ylab = y_name
+        self.lab = labels
 
-def plot_pressure(df): 
+        matplotback.FigureCanvasQTAgg.__init__(self,self.fig)
 
-    fig1 = plt.figure(figsize=(12,4))
-    print(df['Tension'])
-    plt.plot(df['Date'],df['Tension'])
-    plt.plot(df['Date'],df['Temperature'])
-    plt.xlabel('Date')
-    plt.ylabel('Tension/Temperature')
-    name = 'plot_pressure.png'
-    plt.savefig(name)
+
+    def setModel(self, model):
+
+        self.model = model
+    
+    def plot(self):
+
+        self.axes.title.set_text(self.title)
+        self.axes.set_xlabel('Time')
+        self.axes.set_ylabel(self.ylab)
+        data = self.model.getData()
+        for i in self.indexes:
+            header  = data.columns[i]
+            print(self.lab[i-1])
+            self.axes.plot(data[header], label = self.lab[i-1])
+        self.axes.legend()
+        self.draw()
+
+
 
 class pandasModel(QtCore.QAbstractTableModel):
 
@@ -65,6 +82,10 @@ class pandasModel(QtCore.QAbstractTableModel):
         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
             return self._data.columns[col]
         return None
+    
+    def getData(self):
+        return self._data
+
 
 class DataPointView(QtWidgets.QDialog,From_DataPointView):
     def __init__(self,point,currentStudy,sensorModel):
@@ -143,11 +164,12 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         data_to_display_press = pandasModel(self.dataPressure)
         self.tableViewPressure.setModel(data_to_display_press)
 
-        #self.plot_temperature = QtGui.QPixmap(plot_temperature(self.dataTemperature))
-        #self.labelPlotTemp.setPixmap(self.plot_temperature)
 
-        #self.plot_pressure = QtGui.QPixmap(plot_pressure(self.dataPressure_unprocessed))
-        #self.labelPlotPressure.setPixmap(self.plot_pressure)
+        #self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", [1,2,3,4], ['10cm', '20cm','30cm','40cm']) # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
+        #self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
+        #self.plotViewTemp.setModel(data_to_display_temp)
+        #self.plotViewTemp.plot()
+
 
 
     def reset(self):
@@ -171,8 +193,8 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         print('coucou')
         dicParam = self.create_dicParam()
         print(dicParam)
-        col = Column.from_dict(dicParam)
-        print(col)
+        #col = Column.from_dict(dicParam)
+        #print(col)
 
     def create_dicParam(self) :
         riv_bed = None
@@ -188,9 +210,9 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         lines = file.readlines()
         for line in lines:
             if line.split(';')[0].strip() == "River_Bed":
-                riv_bed = float(line.split(';')[1].strip())
+                riv_bed = np.float(line.split(';')[1].strip())
             if line.split(';')[0].strip() == "Delta_h":
-                offset = float(line.split(';')[1].strip())
+                offset = np.float(line.split(';')[1].strip())
         #depth_sensors
         shaft = self.point.shaft
         item_shafts = self.sensorModel.item(2)
@@ -205,7 +227,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         dH_measures = list(zip(dfp['Date'].tolist(),list(zip(dfp['Pressure'].tolist(), dfp['Temperature'].tolist()))))
         #T_measures
         dft = self.dataTemperature
-        T_measures = list(zip(dft['Date'].tolist(),dft['T sensor 1'].tolist(),dft['T sensor 2'].tolist(),dft['T sensor 3'].tolist(),dft['T sensor 4'].tolist()))
+        T_measures = list(zip(dft['Date'].tolist(),list(zip(dft['T sensor 1'].tolist(),dft['T sensor 2'].tolist(),dft['T sensor 3'].tolist(),dft['T sensor 4'].tolist()))))
         #sigma_meas_P
         pres = self.point.pressure_sensor
         item_pres = self.sensorModel.item(0)
@@ -222,7 +244,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
                 temp_sensor = item_temp.child(row).data(QtCore.Qt.UserRole)
         sigma_meas_T = temp_sensor.sigma
         dic = {'river_bed': riv_bed, 'depth_sensors' : depth_sensors, 'offset' : offset, 'dH_measures' : dH_measures, 
-                'T_measures' : T_measures, 'Sigma_Meas_T' : sigma_meas_T, 'Sigma_Meas_P' : sigma_meas_P }
+                'T_measures' : T_measures, 'sigma_meas_T' : sigma_meas_T, 'sigma_meas_P' : sigma_meas_P }
         return dic
 
 
