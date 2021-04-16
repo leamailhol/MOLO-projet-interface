@@ -199,7 +199,6 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         dicParam = self.create_dicParam()
         print(dicParam)
         computeSolveTransi = self.create_computeSolveTransi()
-        print(computeSolveTransi)
         col = Column.from_dict(dicParam)
         print(col)
 
@@ -260,8 +259,10 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         n = self.doubleSpinBox_Porosity.value()
         rhos_cs = self.doubleSpinBox_ThermalCapacity.value()
         nb_cel = self.lineEdit_CellsNumber.text()
+        dic = {'moinslog10K' : moinslog10K, 'lambda_s' : lambda_s, 'n' : n, 'rhos_cs' : rhos_cs, 'nb_cel' : nb_cel}
+        return dic
 
-compute_solve_transi(moinslog10K, lambda_s, n, rhos_cs, nb_cel)
+
 
 
 
