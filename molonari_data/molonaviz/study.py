@@ -4,7 +4,7 @@ from sensor import temperatureSensor
 from sensor import temperatureShaft
 from sensor import sensorType
 
-
+import numpy as np
 import os
 from PyQt5 import QtGui, QtCore
 
@@ -44,7 +44,7 @@ class Study(object):
 
             sensor = self.loadPressureSensor(mydir) 
             
-            no_ext, ext = os.path.splitext(mydir)
+            no_ext, _ = os.path.splitext(mydir)
             item = QtGui.QStandardItem(no_ext)
             item.setData(sensor, QtCore.Qt.UserRole)
             item_press.appendRow(item)
@@ -66,7 +66,7 @@ class Study(object):
         for mydir in dirs3 :
 
             sensor = self.loadTemperatureSensor(mydir)
-            no_ext, ext = os.path.splitext(mydir)
+            no_ext, _ = os.path.splitext(mydir)
             item = QtGui.QStandardItem(no_ext) 
             item.setData(sensor, QtCore.Qt.UserRole)
             item_temp.appendRow(item)
@@ -86,7 +86,7 @@ class Study(object):
         for mydir in dirs4 : 
 
             sensor = self.loadTemperatureShaft(mydir)
-            no_ext, ext = os.path.splitext(mydir)
+            no_ext, _ = os.path.splitext(mydir)
             item = QtGui.QStandardItem(no_ext)
             item.setData(sensor, QtCore.Qt.UserRole)
             item_shaft.appendRow(item)
@@ -113,11 +113,11 @@ class Study(object):
         lines = file.readlines()
         for line in lines:
             if line.split(';')[0].strip() == "Intercept":
-                sensor.intercept = line.split(';')[1].strip()
+                sensor.intercept = np.float(line.split(';')[1].strip())
             if line.split(';')[0].strip() == "dU_dH":
-                sensor.dudh = line.split(';')[1].strip()
+                sensor.dudh = np.float(line.split(';')[1].strip())
             if line.split(';')[0].strip() == "dU_dT":
-                sensor.dudt = line.split(';')[1].strip()
+                sensor.dudt = np.float(line.split(';')[1].strip())
         return sensor
 
     def loadTemperatureSensor(self, sensorName):
