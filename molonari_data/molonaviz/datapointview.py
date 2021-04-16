@@ -198,6 +198,8 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         print('coucou')
         dicParam = self.create_dicParam()
         print(dicParam)
+        computeSolveTransi = self.create_computeSolveTransi()
+        print(computeSolveTransi)
         col = Column.from_dict(dicParam)
         print(col)
 
@@ -251,6 +253,15 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         dic = {'river_bed': riv_bed, 'depth_sensors' : depth_sensors, 'offset' : offset, 'dH_measures' : dH_measures, 
                 'T_measures' : T_measures, 'Sigma_Meas_T' : sigma_meas_T, 'Sigma_Meas_P' : sigma_meas_P }
         return dic
+
+    def create_computeSolveTransi(self) :
+        moinslog10K = self.doubleSpinBox_Permeability.value()
+        lambda_s = self.doubleSpinBox_Lambdas.value()
+        n = self.doubleSpinBox_Porosity.value()
+        rhos_cs = self.doubleSpinBox_ThermalCapacity.value()
+        nb_cel = self.lineEdit_CellsNumber.text()
+
+compute_solve_transi(moinslog10K, lambda_s, n, rhos_cs, nb_cel)
 
 
 
