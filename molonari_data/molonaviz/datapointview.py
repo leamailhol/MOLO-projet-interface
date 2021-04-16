@@ -13,9 +13,6 @@ matplotlib.use('Qt5Agg')
 
 from PyQt5 import QtCore, QtWidgets, QtGui, uic, QtWidgets
 
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
-
 From_DataPointView,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"datapointview.ui"))
 
 
@@ -23,49 +20,38 @@ From_DataPointView,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__)
 #os.chdir(path_point)
 # Create processed temperatures plot
 
-class TimeSeriesPlotCanvas(FigureCanvasQTAgg):
+class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvas):
 
-    def __init__(self, title='Temperature (K)', indices = [2,3,4,5], width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
+    def __init__(self, title, y_name, indexes, labels):
+
+        self.fig = matplotlib.figure.Figure()
         self.title = title
-        self.indices = indices 
-        self.axes = fig.add_subplot(111)
-        super(TimeSeriesPlotCanvas, self).__init__(fig)
+        self.indexes = indexes
+        self.axes = self.fig.add_subplot(111)
+        self.ylab = y_name
+        self.lab = labels
+
+        matplotlib.backends.backend_qt5agg.FigureCanvas.__init__(self,self.fig)
 
 
-    def setModel(self, df):
+    def setModel(self, model):
 
-        self.dataFrameTime = df['Date']
-        self.dataFrameTemp = df['']
+        self.model = model
+    
+    def plot(self):
+
+        self.axes.title.set_text(self.title)
+        self.axes.set_xlabel('Time')
+        self.axes.set_ylabel(self.ylab)
+        data = self.model.getData()
+        for i in self.indexes:
+            header  = data.columns[i]
+            print(self.lab[i-1])
+            self.axes.plot(data[header], label = self.lab[i-1])
+        self.axes.legend()
+        self.draw()
 
 
-
-
-def plot_temperature(df): 
-
-    fig = plt.figure(figsize=(12,4))
-    plt.plot(df['Date'],df['T sensor 1'], label='10.0 cm')
-    plt.plot(df['Date'],df['T sensor 2'], label='20.0 cm')
-    plt.plot(df['Date'],df['T sensor 3'], label='30.0 cm')
-    plt.plot(df['Date'],df['T sensor 4'], label='40.0 cm')
-    plt.legend()
-    plt.xlabel('Date')
-    plt.ylabel('Temperature')
-    name = 'plot_temperature.png'
-    plt.savefig(name)
-
-    return(name)
-
-def plot_pressure(df): 
-
-    fig1 = plt.figure(figsize=(12,4))
-    print(df['Tension'])
-    plt.plot(df['Date'],df['Tension'])
-    plt.plot(df['Date'],df['Temperature'])
-    plt.xlabel('Date')
-    plt.ylabel('Tension/Temperature')
-    name = 'plot_pressure.png'
-    plt.savefig(name)
 
 class pandasModel(QtCore.QAbstractTableModel):
 
@@ -89,6 +75,10 @@ class pandasModel(QtCore.QAbstractTableModel):
         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
             return self._data.columns[col]
         return None
+    
+    def getData(self):
+        return self._data
+
 
 class DataPointView(QtWidgets.QDialog,From_DataPointView):
     def __init__(self,point,currentStudy,sensorModel):
@@ -194,21 +184,14 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.tableViewPressure.setModel(data_to_display_press)
 
 
-        self.plotViewTemp = TimeSeriesPlotCanvas("Temperature(K)", [2,3,4,5]) # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
+        self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", [1,2,3,4], ['10cm', '20cm','30cm','40cm']) # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
+        self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
         self.plotViewTemp.setModel(data_to_display_temp)
         self.plotViewTemp.plot()
 
-        #self.plot_temperature = QtGui.QPixmap(plot_temperature(self.dataTemperature))
-        #self.labelPlotTemp.setPixmap(self.plot_temperature)
 
-        #self.plot_pressure = QtGui.QPixmap(plot_pressure(self.dataPressure_unprocessed))
-        #self.labelPlotPressure.setPixmap(self.plot_pressure)
 
-        
 
-# Add to container widget
-
-        self.layoutTempMeasures.addWidget(self.plotViewTemp)
 
 
     def reset(self):
