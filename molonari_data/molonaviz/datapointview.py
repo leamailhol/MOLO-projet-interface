@@ -5,15 +5,14 @@ from study import Study
 from csv import reader
 from sensor import pressureSensor
 import numpy as np
-from pyheatmy import *
 
 
 
 import sys
-import matplotlib
-
+import matplotlib.pyplot as plt
+import matplotlib.backends
+from matplotlib.backends import backend_qt5agg
 matplotlib.use('Qt5Agg')
-
 
 from PyQt5 import QtCore, QtWidgets, QtGui, uic, QtWidgets
 
@@ -23,7 +22,7 @@ From_DataPointView,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__)
 from dialogcleanup import DialogCleanUp
 from numpy import NaN
 from computedialog import ComputeDialog
-
+from pyheatmy import *
 
 
 #path_point = 'C:/Users/Léa/Documents/MINES 2A/MOLONARI/INTERFACE/MOLO-projet-interface/molonari_data/study_ordiLea/Point001'
@@ -42,7 +41,6 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvas):
         self.lab = labels
 
         matplotlib.backends.backend_qt5agg.FigureCanvas.__init__(self,self.fig)
-
 
 
     def setModel(self, model):
@@ -168,10 +166,14 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         data_to_display_press = pandasModel(self.dataPressure)
         self.tableViewPressure.setModel(data_to_display_press)
 
-        #self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", [1,2,3,4], ['10cm', '20cm','30cm','40cm']) # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
-        #self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
-        #self.plotViewTemp.setModel(data_to_display_temp)
-        #self.plotViewTemp.plot()
+
+        self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", [1,2,3,4], ['10cm', '20cm','30cm','40cm']) # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
+        self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
+        self.plotViewTemp.setModel(data_to_display_temp)
+        self.plotViewTemp.plot()
+
+
+
 
 
 
@@ -196,8 +198,9 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         print('coucou')
         dicParam = self.create_dicParam()
         print(dicParam)
-        #col = Column.from_dict(dicParam)
-        #print(col)
+        computeSolveTransi = self.create_computeSolveTransi()
+        col = Column.from_dict(dicParam)
+        print(col)
 
     def create_dicParam(self) :
         riv_bed = None
@@ -213,9 +216,9 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         lines = file.readlines()
         for line in lines:
             if line.split(';')[0].strip() == "River_Bed":
-                riv_bed = np.float(line.split(';')[1].strip())
+                riv_bed = float(line.split(';')[1].strip())
             if line.split(';')[0].strip() == "Delta_h":
-                offset = np.float(line.split(';')[1].strip())
+                offset = float(line.split(';')[1].strip())
         #depth_sensors
         shaft = self.point.shaft
         item_shafts = self.sensorModel.item(2)
@@ -230,7 +233,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         dH_measures = list(zip(dfp['Date'].tolist(),list(zip(dfp['Pressure'].tolist(), dfp['Temperature'].tolist()))))
         #T_measures
         dft = self.dataTemperature
-        T_measures = list(zip(dft['Date'].tolist(),list(zip(dft['T sensor 1'].tolist(),dft['T sensor 2'].tolist(),dft['T sensor 3'].tolist(),dft['T sensor 4'].tolist()))))
+        T_measures = list(zip(dft['Date'].tolist(),dft['T sensor 1'].tolist(),dft['T sensor 2'].tolist(),dft['T sensor 3'].tolist(),dft['T sensor 4'].tolist()))
         #sigma_meas_P
         pres = self.point.pressure_sensor
         item_pres = self.sensorModel.item(0)
@@ -247,8 +250,19 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
                 temp_sensor = item_temp.child(row).data(QtCore.Qt.UserRole)
         sigma_meas_T = temp_sensor.sigma
         dic = {'river_bed': riv_bed, 'depth_sensors' : depth_sensors, 'offset' : offset, 'dH_measures' : dH_measures, 
-                'T_measures' : T_measures, 'sigma_meas_T' : sigma_meas_T, 'sigma_meas_P' : sigma_meas_P }
+                'T_measures' : T_measures, 'Sigma_Meas_T' : sigma_meas_T, 'Sigma_Meas_P' : sigma_meas_P }
         return dic
+
+    def create_computeSolveTransi(self) :
+        moinslog10K = self.doubleSpinBox_Permeability.value()
+        lambda_s = self.doubleSpinBox_Lambdas.value()
+        n = self.doubleSpinBox_Porosity.value()
+        rhos_cs = self.doubleSpinBox_ThermalCapacity.value()
+        nb_cel = self.lineEdit_CellsNumber.text()
+        dic = {'moinslog10K' : moinslog10K, 'lambda_s' : lambda_s, 'n' : n, 'rhos_cs' : rhos_cs, 'nb_cel' : nb_cel}
+        return dic
+
+
 
 
 
