@@ -19,6 +19,7 @@ From_DataPointView,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__)
 
 from dialogcleanup import DialogCleanUp
 from numpy import NaN
+from computedialog import ComputeDialog
 
 
 #path_point = 'C:/Users/Léa/Documents/MINES 2A/MOLONARI/INTERFACE/MOLO-projet-interface/molonari_data/study_ordiLea/Point001'
@@ -96,7 +97,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.setupUi(self)
         self.currentStudy = currentStudy
         self.sensorModel = sensorModel
-
+        self.compdlg = None
         # On paramètre le premier onglet
 
         ## Notice
@@ -185,7 +186,72 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
             clnp.saveCleanedUpData(mycleanupcode)
 
     def compute(self):
-        print('compute')
+        self.compdlg = ComputeDialog()
+        res = self.compdlg.exec()
+        if (res == QtWidgets.QDialog.Accepted) :
+            self.runmodel()
+
+    def runmodel(self) :
+        print('coucou')
+        dicParam = self.create_dicParam()
+        print(dicParam)
+
+    def create_dicParam(self) :
+        riv_bed = None
+        depth_sensors = None
+        offset = None
+        dH_measures = None
+        T_measures = []
+        sigma_meas_P = None
+        sigma_meas_T = None
+        print('coucou dic param')
+        #riv_bed
+        file = open(self.point.info,"r")
+        lines = file.readlines()
+        for line in lines:
+            if line.split(';')[0].strip() == "River_Bed":
+                riv_bed = float(line.split(';')[1].strip())
+            if line.split(';')[0].strip() == "Delta_h":
+                offset = float(line.split(';')[1].strip())
+        #depth_sensors
+        shaft = self.point.shaft
+        item_shafts = self.sensorModel.item(2)
+        shaft_sensor = None
+        for row in range(item_shafts.rowCount()):
+            if item_shafts.child(row).text() == shaft :
+                shaft_sensor = item_shafts.child(row).data(QtCore.Qt.UserRole)
+        depth_sensors = shaft_sensor.sensors_depth
+        temp = shaft_sensor.t_sensor_name
+        #dH_measures 
+        dfp = self.dataPressure
+        dH_measures = list(zip(dfp['Date'].tolist(),list(zip(dfp['Pressure'].tolist(), dfp['Temperature'].tolist())[0]))[0])
+        #T_measures
+        dft = self.dataTemperature
+        T_measures = list(zip(dft['Date'].tolist(),dft['T sensor 1'].tolist(),dft['T sensor 2'].tolist(),dft['T sensor 3'].tolist(),dft['T sensor 4'].tolist()))
+        #sigma_meas_P
+        pres = self.point.pressure_sensor
+        item_pres = self.sensorModel.item(0)
+        pres_sensor = None
+        for row in range(item_pres.rowCount()):
+            if item_pres.child(row).text() == pres :
+                pres_sensor = item_pres.child(row).data(QtCore.Qt.UserRole)
+        sigma_meas_P = pres_sensor.sigma
+        #sigma_meas_T
+        item_temp = self.sensorModel.item(1)
+        temp_sensor = None
+        for row in range(item_temp.rowCount()):
+            if item_temp.child(row).text() == temp :
+                temp_sensor = item_temp.child(row).data(QtCore.Qt.UserRole)
+        sigma_meas_T = temp_sensor.sigma
+        dic = {'river_bed': riv_bed, 'depth_sensors' : depth_sensors, 'offset' : offset, 'dH_measures' : dH_measures, 
+                'T_measures' : T_measures, 'Sigma_Meas_T' : sigma_meas_T, 'Sigma_Meas_P' : sigma_meas_P }
+        return dic
+
+
+
+        
+
+
     
 
     

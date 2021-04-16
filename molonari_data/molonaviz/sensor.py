@@ -11,19 +11,21 @@ class pressureSensor(object):
     classdocs
     '''
 
-    def __init__(self, name="", intercept=NaN, dudh=NaN, dudt=NaN):
+    def __init__(self, name="", intercept=NaN, dudh=NaN, dudt=NaN, sigma = NaN):
         self.name = name
         self.intercept = intercept
         self.dudh = dudh
         self.dudt = dudt
+        self.sigma = sigma
 
 class temperatureSensor(object):
     '''
     classdocs
     '''
 
-    def __init__(self, name=""):
+    def __init__(self, name="", sigma = NaN):
         self.name = name
+        self.sigma = sigma 
 
 
 class temperatureShaft(object):
