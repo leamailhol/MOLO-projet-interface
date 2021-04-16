@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>642</width>
+    <width>657</width>
     <height>544</height>
    </rect>
   </property>
@@ -123,7 +123,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_PermeabilityMin"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_PermeabilityMin">
+          <property name="accessibleName">
+           <string>doubleSpinBox_PermeabilityMax</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="label_30">
@@ -133,7 +137,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_PermeabilityMax_5"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_PermeabilityMax">
+          <property name="accessibleName">
+           <string>doubleSpinBox_PermeabilityMax</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="label_34">
