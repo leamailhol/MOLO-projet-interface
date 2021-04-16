@@ -7,6 +7,7 @@ from sensor import pressureSensor
 import numpy as np
 
 
+
 import sys
 import matplotlib
 matplotlib.use('Qt5Agg')
@@ -14,6 +15,10 @@ matplotlib.use('Qt5Agg')
 from PyQt5 import QtCore, QtWidgets, QtGui, uic, QtWidgets
 
 From_DataPointView,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__),"datapointview.ui"))
+
+
+from dialogcleanup import DialogCleanUp
+from numpy import NaN
 
 
 #path_point = 'C:/Users/Léa/Documents/MINES 2A/MOLONARI/INTERFACE/MOLO-projet-interface/molonari_data/study_ordiLea/Point001'
@@ -148,39 +153,13 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.pushButtonCompute.clicked.connect(self.compute)
 
         
-        #col_temp = ['Index','Date','Tension','Température','A','B','C']
-        col_temp = ['Date','T sensor 1','T sensor 2', 'T sensor 3', 'T sensor 4']
-        self.dataTemperature = pd.read_csv('imp_raw_temperature.csv', encoding='utf-8', sep=';', low_memory=False, skiprows=0)
-        self.dataTemperature.columns = col_temp
-        #self.dataTemperature = self.dataTemperature.drop(['A','B','C'],axis=1)
+        self.dataTemperature = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
         data_to_display_temp = pandasModel(self.dataTemperature)
         self.tableViewTemperature.setModel(data_to_display_temp)
         
-        col_press = ['Date','Tension','Temperature']
-        self.dataPressure_unprocessed = pd.read_csv('imp_raw_pressure.csv', encoding='utf-8', sep=';', low_memory=False, skiprows=0)
-        self.dataPressure_unprocessed.columns = col_press 
-        sensordir = self.currentStudy.sensorDir
-        dirs = os.listdir(sensordir)
-        press = dirs[0]
-        pathCalib = os.path.join(sensordir, press, f'{str(self.point.pressure_sensor)}.csv')
-        file = open(pathCalib,"r")
-        lines = file.readlines()
-        intercept = None
-        dudh = None 
-        dudt = None 
-        for line in lines:
-            if line.split(';')[0].strip() == "Intercept":
-                intercept = float(line.split(';')[1].strip())
-            if line.split(';')[0].strip() == "dU_dH":
-                dudh = float(line.split(';')[1].strip())
-            if line.split(';')[0].strip() == "dU_dT":
-                dudt = float(line.split(';')[1].strip())
-        df = self.dataPressure_unprocessed
-        df = df.dropna()
-        df = df.astype({'Temperature': np.float,'Tension': np.float})
-        df['Pressure'] = (df['Tension']-intercept-dudt*df['Temperature'])/dudh
-        #self.dataTemperature = self.dataTemperature.drop(['A','B','C'],axis=1)
-        data_to_display_press = pandasModel(df)
+        
+        self.dataPressure = pd.read_csv('processed_pressure.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        data_to_display_press = pandasModel(self.dataPressure)
         self.tableViewPressure.setModel(data_to_display_press)
 
 
@@ -198,7 +177,12 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         print('reset')
     
     def cleanup(self):
-        print('cleanup')
+        clnp = DialogCleanUp() 
+        mycleanupcode = clnp.getCode()
+        res = clnp.exec()
+        if (res == QtWidgets.QDialog.Accepted) :
+            
+            clnp.saveCleanedUpData(mycleanupcode)
 
     def compute(self):
         print('compute')

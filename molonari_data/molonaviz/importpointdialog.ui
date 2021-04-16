@@ -49,6 +49,9 @@
        <property name="enabled">
         <bool>true</bool>
        </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item row="0" column="3">
@@ -62,7 +65,11 @@
       </widget>
      </item>
      <item row="0" column="4">
-      <widget class="QLineEdit" name="lineEdit_Sensor"/>
+      <widget class="QLineEdit" name="lineEdit_Sensor">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item row="0" column="5">
       <widget class="QLabel" name="label_7">
@@ -75,7 +82,11 @@
       </widget>
      </item>
      <item row="0" column="6">
-      <widget class="QLineEdit" name="lineEdit_Shaft"/>
+      <widget class="QLineEdit" name="lineEdit_Shaft">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item row="0" column="7">
       <widget class="QPushButton" name="pushButton_BrowseInfo">

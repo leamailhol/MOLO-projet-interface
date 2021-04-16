@@ -51,7 +51,7 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
             
 
     def importPoint(self):
-        dlg = ImportPointDialog() 
+        dlg = ImportPointDialog(self.currentStudy,self.sensorModel) 
         #for i in range(self.sensorModel.rowCount()) :
             #sensor_name = self.sensorModel.item(i).text() 
             #dlg.comboBox_Sensor.addItem(sensor_name)
@@ -63,13 +63,15 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
             self.currentPoint = dlg.getPoint()
             self.currentPoint.loadPoint(self.pointModel)
             self.currentPoint.savePoint(self.currentStudy)
+            dlg.saveProcessedPres()
+            dlg.saveProcessedTemp()
 
     def openPoint(self,index):
         item = self.pointModel.itemFromIndex(index)
         self.clickedPoint = item.data(QtCore.Qt.UserRole)
         self.clickedPoint.path = f'{self.currentStudy.rootDir}/{self.clickedPoint.name}'
         datapointview = DataPointView(self.clickedPoint,self.currentStudy,self.sensorModel)
-        datapointview.setObjectName(self.clickedPoint.name)
+        datapointview.setWindowTitle(self.clickedPoint.name)
         self.mdiArea.addSubWindow(datapointview)    
         datapointview.show()
     

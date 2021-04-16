@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>447</width>
+    <width>845</width>
     <height>340</height>
    </rect>
   </property>
@@ -69,7 +69,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabInfo">
       <attribute name="title">
@@ -120,8 +120,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>757</width>
-            <height>537</height>
+            <width>784</width>
+            <height>543</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -153,7 +153,11 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
-        <widget class="QTableView" name="tableViewTemperature"/>
+        <widget class="QTableView" name="tableViewTemperature">
+         <attribute name="verticalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -161,16 +165,18 @@
       <attribute name="title">
        <string>Pressure</string>
       </attribute>
-      <widget class="QTableView" name="tableViewPressure">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>664</width>
-         <height>247</height>
-        </rect>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QTableView" name="tableViewPressure">
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tabPlot">
       <attribute name="title">
