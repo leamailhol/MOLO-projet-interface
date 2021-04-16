@@ -63,28 +63,30 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
             self.lineEdit_Notice.setText(dirPath[0])
 
     def saveProcessedTemp(self):
-        col_temp = ['Date','T sensor 1','T sensor 2', 'T sensor 3', 'T sensor 4']
-        dftemp = pd.read_csv(self.lineEdit_RawTemperature.text(), encoding='utf-8', sep=';', low_memory=False, skiprows=0)
+        col_temp = ['Index','Date','T sensor 1','T sensor 2', 'T sensor 3', 'T sensor 4']
+        dftemp = pd.read_csv(self.lineEdit_RawTemperature.text(), encoding='utf-8', sep=',', low_memory=False, skiprows=1)
         dftemp.columns = col_temp
         dftemp.index.name='Index'
         dftemp = dftemp.astype({'T sensor 1': np.float,'T sensor 2': np.float,'T sensor 3': np.float,'T sensor 4': np.float})
+        for i in range(1,5) :
+            dftemp[f'T sensor {i}']=dftemp[f'T sensor {i}'] + float(273.5)
         path = os.path.join(self.currentStudy.rootDir,self.lineEdit_PointName.text(), 'processed_temperature.csv')
-        dftemp.to_csv(path)
+        dftemp.to_csv(path, index = False)
 
     def saveProcessedPres(self):
         col_press = ['Date','Tension','Temperature']
         dfpres = pd.read_csv(self.lineEdit_RawPressure.text(), encoding='utf-8', sep=';', low_memory=False, skiprows=0)
         dfpres.columns = col_press 
         dfpres.index.name='Index'
+        dfpres = dfpres.dropna()
+        dfpres = dfpres.astype({'Temperature': np.float,'Tension': np.float})
+        dfpres['Temperature'] = dfpres['Temperature'] #+float(273.5)
         pres_sensor_name = self.lineEdit_Sensor.text()
-        print(pres_sensor_name )
         item_pres = self.sensorModel.item(0)
         pres_sensor = None
         for row in range(item_pres.rowCount()):
             if item_pres.child(row).text() == pres_sensor_name :
                 pres_sensor = item_pres.child(row).data(QtCore.Qt.UserRole)
-        dfpres = dfpres.dropna()
-        dfpres = dfpres.astype({'Temperature': np.float,'Tension': np.float})
         dfpres['Pressure'] = (dfpres['Tension']-pres_sensor.intercept-pres_sensor.dudt*dfpres['Temperature'])/pres_sensor.dudh
         path = os.path.join(self.currentStudy.rootDir, self.lineEdit_PointName.text(),'processed_pressure.csv')
         dfpres.to_csv(path)
