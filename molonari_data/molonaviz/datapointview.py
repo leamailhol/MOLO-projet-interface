@@ -12,6 +12,7 @@ import numpy as np
 from dialogcleanup import DialogCleanUp
 from numpy import NaN
 from computedialog import ComputeDialog
+from pyheatmy import *
 
 #path_point = 'C:/Users/Léa/Documents/MINES 2A/MOLONARI/INTERFACE/MOLO-projet-interface/molonari_data/study_ordiLea/Point001'
 #os.chdir(path_point)
@@ -170,6 +171,8 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         print('coucou')
         dicParam = self.create_dicParam()
         print(dicParam)
+        col = Column.from_dict(dicParam)
+        print(col)
 
     def create_dicParam(self) :
         riv_bed = None
