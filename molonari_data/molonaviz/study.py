@@ -133,7 +133,7 @@ class Study(object):
         lines = file.readlines()
         for line in lines:
             if line.split(';')[0].strip() == "Sigma_Meas_T":
-                sensor.sigma = line.split(';')[1].strip()
+                sensor.sigma = float(line.split(';')[1].strip())
         return sensor
 
     def loadTemperatureShaft(self, sensorName):
@@ -151,7 +151,8 @@ class Study(object):
             if line.split(';')[0].strip() == "T_Sensor_Name":
                 sensor.t_sensor_name = line.split(';')[1].strip()
             if line.split(';')[0].strip() == "Sensors_Depth":
-                sensor.sensors_depth = line.split(';')[1].strip()
+                a = line.split(';')[1].strip()
+                sensor.sensors_depth = [float(x) for x in a[1:-1].split(',')]
         return sensor
 
     def loadPoint(self, pointName):

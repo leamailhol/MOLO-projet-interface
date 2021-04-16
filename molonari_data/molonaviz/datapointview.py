@@ -6,7 +6,7 @@ from csv import reader
 from sensor import pressureSensor
 import numpy as np
 from pyheatmy import *
-
+from datetime import datetime
 
 import sys
 import matplotlib
@@ -193,8 +193,11 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         print('coucou')
         dicParam = self.create_dicParam()
         print(dicParam)
-        #col = Column.from_dict(dicParam)
-        #print(col)
+        col = Column.from_dict(dicParam)
+        print(col)
+
+    def string_to_date (self, str) :
+        return(datetime.strptime(str,"%Y/%m/%d %H:%M:%S"))
 
     def create_dicParam(self) :
         riv_bed = None
@@ -204,7 +207,6 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         T_measures = []
         sigma_meas_P = None
         sigma_meas_T = None
-        print('coucou dic param')
         #riv_bed
         file = open(self.point.info,"r")
         lines = file.readlines()
@@ -224,9 +226,12 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         temp = shaft_sensor.t_sensor_name
         #dH_measures 
         dfp = self.dataPressure
+        change_date = np.vectorize(self.string_to_date)
+        dfp['Date']= change_date(dfp['Date'])
         dH_measures = list(zip(dfp['Date'].tolist(),list(zip(dfp['Pressure'].tolist(), dfp['Temperature'].tolist()))))
         #T_measures
         dft = self.dataTemperature
+        dft['Date']= change_date(dft['Date'])
         T_measures = list(zip(dft['Date'].tolist(),list(zip(dft['T sensor 1'].tolist(),dft['T sensor 2'].tolist(),dft['T sensor 3'].tolist(),dft['T sensor 4'].tolist()))))
         #sigma_meas_P
         pres = self.point.pressure_sensor
