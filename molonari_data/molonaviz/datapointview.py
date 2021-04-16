@@ -259,8 +259,8 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         n = self.doubleSpinBox_Porosity.value()
         rhos_cs = self.doubleSpinBox_ThermalCapacity.value()
         nb_cel = self.lineEdit_CellsNumber.text()
-        dic = {'moinslog10K' : moinslog10K, 'lambda_s' : lambda_s, 'n' : n, 'rhos_cs' : rhos_cs, 'nb_cel' : nb_cel}
-        return dic
+        tuple = (moinslog10K, lambda_s, n, rhos_cs, nb_cel}
+        return tuple
 
 
 
