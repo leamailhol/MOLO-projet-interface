@@ -199,8 +199,11 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         dicParam = self.create_dicParam()
         print(dicParam)
         computeSolveTransi = self.create_computeSolveTransi()
-        col = Column.from_dict(dicParam)
-        print(col)
+        print(computeSolveTransi)
+        paramMCMC = self.create_paramMCMC()
+        print(paramMCMC)
+        #col = Column.from_dict(dicParam)
+        #print(col)
 
     def create_dicParam(self) :
         riv_bed = None
@@ -254,13 +257,40 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         return dic
 
     def create_computeSolveTransi(self) :
-        moinslog10K = self.doubleSpinBox_Permeability.value()
-        lambda_s = self.doubleSpinBox_Lambdas.value()
-        n = self.doubleSpinBox_Porosity.value()
-        rhos_cs = self.doubleSpinBox_ThermalCapacity.value()
-        nb_cel = self.lineEdit_CellsNumber.text()
-        tuple = (moinslog10K, lambda_s, n, rhos_cs, nb_cel}
+        moinslog10K = self.compdlg.doubleSpinBox_Permeability.value()
+        lambda_s = self.compdlg.doubleSpinBox_Lambdas.value()
+        n = self.compdlg.doubleSpinBox_Porosity.value()
+        rhos_cs = self.compdlg.doubleSpinBox_ThermalCapacity.value()
+        nb_cel = self.compdlg.lineEdit_CellsNumber.text()
+        tuple = (float(moinslog10K), float(lambda_s), float(n), float(rhos_cs), int(nb_cel))
         return tuple
+
+    def create_paramMCMC(self) : 
+        range_moinslog10K_min = float(self.compdlg.doubleSpinBox_PermeabilityMin.value())
+        range_moinslog10K_max = float(self.compdlg.doubleSpinBox_PermeabilityMax.value())
+        sigma_moinslog10K = float(self.compdlg.doubleSpinBox_PermeabilitySigma.value())
+
+        range_lambda_s_min = float(self.compdlg.doubleSpinBox_LambdasMin.value())
+        range_lambda_s_max = float(self.compdlg.doubleSpinBox_LambdasMax.value())
+        sigma_lambda_s = float(self.compdlg.doubleSpinBox_LambdasSigma.value())
+
+        range_n_min = float(self.compdlg.doubleSpinBox_PorosityMin.value())
+        range_n_max = float(self.compdlg.doubleSpinBox_PorosityMax.value())
+        sigma_n = float(self.compdlg.doubleSpinBox_PorositySigma.value())
+
+        range_rhos_cs_min = float(self.compdlg.doubleSpinBox_ThermalCapacityMin.value())
+        range_rhos_cs_max = float(self.compdlg.doubleSpinBox_ThermalCapacityMax.value())
+        sigma_rhos_cs = float(self.compdlg.doubleSpinBox_ThermalCapacitySigma.value())
+
+        priors = {'moinslog10K' : ((range_moinslog10K_min, range_moinslog10K_max), sigma_moinslog10K), 'lambda_s' : ((range_lambda_s_min, range_lambda_s_max), sigma_lambda_s), 'n' : ((range_n_min, range_n_max), sigma_n), 'rhos_cs' : ((range_rhos_cs_min, range_rhos_cs_max), sigma_rhos_cs)}
+
+        nb_iter = int(self.compdlg.lineEdit_IterationsNumber.text())
+        nb_cel = int(self.compdlg.lineEdit_CellsNumberMCMC.text())
+
+        tuple = (priors, nb_iter, nb_cel)
+
+        return tuple
+
 
 
 
