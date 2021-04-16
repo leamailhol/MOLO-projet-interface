@@ -199,7 +199,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         temp = shaft_sensor.t_sensor_name
         #dH_measures 
         dfp = self.dataPressure
-        dH_measures = list(zip(dfp['Date'].tolist(),list(zip(dfp['Pressure'].tolist(), dfp['Temperature'].tolist())[0]))[0])
+        dH_measures = list(zip(dfp['Date'].tolist(),list(zip(dfp['Pressure'].tolist(), dfp['Temperature'].tolist()))))
         #T_measures
         dft = self.dataTemperature
         T_measures = list(zip(dft['Date'].tolist(),dft['T sensor 1'].tolist(),dft['T sensor 2'].tolist(),dft['T sensor 3'].tolist(),dft['T sensor 4'].tolist()))
