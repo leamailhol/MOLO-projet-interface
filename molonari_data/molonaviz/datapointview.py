@@ -104,6 +104,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.compdlg = None
         # On paramètre le premier onglet
         self.temps_from_tuple = None
+        self.col = None 
 
         ## Notice
 
@@ -201,25 +202,25 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         print(dicParam)
         computeSolveTransi = self.create_computeSolveTransi()
         print(computeSolveTransi)
-        col = Column.from_dict(dicParam)
+        self.self.col = self.column.from_dict(dicParam)
         params_tuple = computeSolveTransi[0]
-        col.compute_solve_transi(params_tuple, computeSolveTransi[1])
-        time = col.get_times_solve()
+        self.col.compute_solve_transi(params_tuple, computeSolveTransi[1])
+        time = self.col.get_times_solve()
         dftime = pd.DataFrame(time)
         dftime.to_csv(f'{self.path_point}/res_time.csv')
-        depths = col.get_depths_solve()
+        depths = self.col.get_depths_solve()
         dfdepths = pd.DataFrame(depths)
         dfdepths.to_csv(f'{self.path_point}/res_depths.csv')
-        temps = col.get_temps_solve()
+        temps = self.col.get_temps_solve()
         dftemps = pd.DataFrame(temps)
         dftemps.to_csv(f'{self.path_point}/res_temps.csv')
-        flows = col.get_flows_solve()
+        flows = self.col.get_flows_solve()
         dfflows = pd.DataFrame(flows)
         dfflows.to_csv(f'{self.path_point}/res_flows.csv')
-        #advec = col.get_advec_flows_solve()
+        #advec = self.col.get_advec_flows_solve()
         #dfadvec = pd.DataFrame(advec)
         #dfadvec.to_csv(f'{self.path_point}/res_advec.csv')
-        #conduc = col.get_conduc_flows_solve() 
+        #conduc = self.col.get_conduc_flows_solve() 
         #dfconduc = pd.DataFrame(conduc)
         #dfconduc.to_csv(f'{self.path_point}/res_conduc.csv')
         
@@ -227,6 +228,8 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
     def runinversion(self) :
         paramMCMC = self.create_paramMCMC()
         print(paramMCMC)
+        self.col.compute_mcmc(nb_iter = paramMCMC[1], priors = paramMCMC[0], nb_cells = paramMCMC[2])
+        
 
     def string_to_date (self, str) :
         return(datetime.strptime(str,"%Y/%m/%d %H:%M:%S"))
