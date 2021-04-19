@@ -168,10 +168,10 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.tableViewPressure.setModel(data_to_display_press)
 
 
-        self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", [1,2,3,4], ['10cm', '20cm','30cm','40cm']) # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
-        self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
-        self.plotViewTemp.setModel(data_to_display_temp)
-        self.plotViewTemp.plot()
+        #self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", [1,2,3,4], ['10cm', '20cm','30cm','40cm']) # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
+        #self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
+        #self.plotViewTemp.setModel(data_to_display_temp)
+        #self.plotViewTemp.plot()
 
 
 
@@ -192,17 +192,21 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
     def compute(self):
         self.compdlg = ComputeDialog()
         res = self.compdlg.exec()
-        if (res == QtWidgets.QDialog.Accepted) :
-            self.runmodel()
+        self.compdlg.pushButton_RunModel.clicked.connect(self.runmodel)
+        self.compdlg.pushButton_Inversion.clicked.connect(self.runinversion)
 
     def runmodel(self) :
-        print('coucou')
         dicParam = self.create_dicParam()
         print(dicParam)
-        col = Column.from_dict(dicParam)
-        print(col)
         computeSolveTransi = self.create_computeSolveTransi()
         print(computeSolveTransi)
+        col = Column.from_dict(dicParam)
+        params_tuple = computeSolveTransi[0]
+        col.compute_solve_transi(params_tuple, computeSolveTransi[1])
+        temps_from_tuple = col.temps_solve
+        print(temps_from_tuple)
+        
+    def runinversion(self) :
         paramMCMC = self.create_paramMCMC()
         print(paramMCMC)
 
@@ -260,7 +264,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
                 temp_sensor = item_temp.child(row).data(QtCore.Qt.UserRole)
         sigma_meas_T = temp_sensor.sigma
         dic = {'river_bed': riv_bed, 'depth_sensors' : depth_sensors, 'offset' : offset, 'dH_measures' : dH_measures, 
-                'T_measures' : T_measures, 'Sigma_Meas_T' : sigma_meas_T, 'Sigma_Meas_P' : sigma_meas_P }
+                'T_measures' : T_measures, 'sigma_meas_T' : sigma_meas_T, 'sigma_meas_P' : sigma_meas_P }
         return dic
 
     def create_computeSolveTransi(self) :
@@ -269,7 +273,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         n = self.compdlg.doubleSpinBox_Porosity.value()
         rhos_cs = self.compdlg.doubleSpinBox_ThermalCapacity.value()
         nb_cel = self.compdlg.lineEdit_CellsNumber.text()
-        tuple = (float(moinslog10K), float(lambda_s), float(n), float(rhos_cs), int(nb_cel))
+        tuple = ((float(moinslog10K), float(lambda_s), float(n), float(rhos_cs)), int(float(nb_cel)))
         return tuple
 
     def create_paramMCMC(self) : 
@@ -291,8 +295,8 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
 
         priors = {'moinslog10K' : ((range_moinslog10K_min, range_moinslog10K_max), sigma_moinslog10K), 'lambda_s' : ((range_lambda_s_min, range_lambda_s_max), sigma_lambda_s), 'n' : ((range_n_min, range_n_max), sigma_n), 'rhos_cs' : ((range_rhos_cs_min, range_rhos_cs_max), sigma_rhos_cs)}
 
-        nb_iter = int(self.compdlg.lineEdit_IterationsNumber.text())
-        nb_cel = int(self.compdlg.lineEdit_CellsNumberMCMC.text())
+        nb_iter = int(float(self.compdlg.lineEdit_IterationsNumber.text()))
+        nb_cel = int(float(self.compdlg.lineEdit_CellsNumberMCMC.text()))
 
         tuple = (priors, nb_iter, nb_cel)
 
