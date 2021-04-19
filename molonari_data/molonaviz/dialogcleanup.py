@@ -34,6 +34,9 @@ class DialogCleanUp(QtWidgets.QDialog,From_DialogCleanUp):
         dft.to_csv('processed_temperature.csv', sep = ',')
         dfp.to_csv('processed_pressure.csv', sep = ',')
 
+        print(dft)
+        print(dfp)
+
     def getCode(self):
 
         return self.textEdit.toPlainText()
