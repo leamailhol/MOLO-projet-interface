@@ -6,8 +6,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>564</width>
-    <height>302</height>
+
+    <width>660</width>
+    <height>340</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,7 +70,12 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+
+      <number>4</number>
+     </property>
+     <property name="tabBarAutoHide">
+      <bool>false</bool>
+
      </property>
      <widget class="QWidget" name="tabInfo">
       <attribute name="title">
@@ -120,8 +126,10 @@
            <rect>
             <x>0</x>
             <y>0</y>
+
             <width>757</width>
             <height>537</height>
+
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -193,8 +201,9 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>532</width>
-            <height>228</height>
+
+            <width>616</width>
+            <height>245</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="layoutMeasuresTemp"/>
@@ -203,10 +212,63 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabResults">
+     <widget class="QWidget" name="tabModelDirect">
       <attribute name="title">
-       <string>Results</string>
+       <string>Direct Model</string>
       </attribute>
+      <widget class="QScrollArea" name="scrollArea_5">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>10</y>
+         <width>618</width>
+         <height>247</height>
+        </rect>
+       </property>
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="widgetModelDirect">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>616</width>
+          <height>245</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="layoutMeasuresTemp_3"/>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tabInversion">
+      <attribute name="title">
+       <string>Bayesian Inversion</string>
+      </attribute>
+      <widget class="QScrollArea" name="scrollArea_9">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>618</width>
+         <height>247</height>
+        </rect>
+       </property>
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="widgetInversion">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>616</width>
+          <height>245</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="layoutMeasuresTemp_6"/>
+       </widget>
+      </widget>
      </widget>
     </widget>
    </item>
