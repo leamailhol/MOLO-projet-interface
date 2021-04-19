@@ -30,7 +30,7 @@ from pyheatmy import *
 #os.chdir(path_point)
 # Create processed temperatures plot
 
-class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvas):
+class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg):
 
     def __init__(self, title, y_name, variable):
         
@@ -41,7 +41,7 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvas):
         self.ylab = y_name
         
 
-        matplotlib.backends.backend_qt5agg.FigureCanvas.__init__(self,self.fig)
+        matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg.__init__(self,self.fig)
 
 
     def setModel(self, model):
@@ -115,6 +115,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.sensorModel = sensorModel
         self.compdlg = None
         # On paramètre le premier onglet
+        self.temps_from_tuple = None
 
         ## Notice
 
@@ -179,7 +180,6 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         data_to_display_press = pandasModel(self.dataPressure)
         self.tableViewPressure.setModel(data_to_display_press)
 
-
         self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", 'Temperature') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
         self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
         self.plotViewTemp.setModel(data_to_display_temp)
@@ -189,10 +189,6 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.layoutMeasuresTemp.addWidget(self.plotViewPress)
         self.plotViewPress.setModel(data_to_display_press)
         self.plotViewPress.plot()
-
-
-
-
 
 
     def reset(self):
@@ -223,9 +219,10 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
 
     def compute(self):
         self.compdlg = ComputeDialog()
-        res = self.compdlg.exec()
         self.compdlg.pushButton_RunModel.clicked.connect(self.runmodel)
         self.compdlg.pushButton_Inversion.clicked.connect(self.runinversion)
+        self.compdlg.exec()
+            
 
     def runmodel(self) :
         dicParam = self.create_dicParam()
@@ -235,9 +232,26 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         col = Column.from_dict(dicParam)
         params_tuple = computeSolveTransi[0]
         col.compute_solve_transi(params_tuple, computeSolveTransi[1])
-        temps_from_tuple = col.temps_solve
-        print(temps_from_tuple)
+        time = col.get_times_solve()
+        dftime = pd.DataFrame(time)
+        dftime.to_csv(f'{self.path_point}/res_time.csv')
+        depths = col.get_depths_solve()
+        dfdepths = pd.DataFrame(depths)
+        dfdepths.to_csv(f'{self.path_point}/res_depths.csv')
+        temps = col.get_temps_solve()
+        dftemps = pd.DataFrame(temps)
+        dftemps.to_csv(f'{self.path_point}/res_temps.csv')
+        flows = col.get_flows_solve()
+        dfflows = pd.DataFrame(flows)
+        dfflows.to_csv(f'{self.path_point}/res_flows.csv')
+        #advec = col.get_advec_flows_solve()
+        #dfadvec = pd.DataFrame(advec)
+        #dfadvec.to_csv(f'{self.path_point}/res_advec.csv')
+        #conduc = col.get_conduc_flows_solve() 
+        #dfconduc = pd.DataFrame(conduc)
+        #dfconduc.to_csv(f'{self.path_point}/res_conduc.csv')
         
+
     def runinversion(self) :
         paramMCMC = self.create_paramMCMC()
         print(paramMCMC)
