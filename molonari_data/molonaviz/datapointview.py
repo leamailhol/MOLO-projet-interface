@@ -5,7 +5,8 @@ from study import Study
 from csv import reader
 from sensor import pressureSensor
 import numpy as np
-
+from pyheatmy import *
+from datetime import datetime
 
 
 import sys
@@ -31,14 +32,14 @@ from pyheatmy import *
 
 class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvas):
 
-    def __init__(self, title, y_name, indexes, labels):
-
+    def __init__(self, title, y_name, variable):
+        
+        self.variable = variable
         self.fig = matplotlib.figure.Figure()
         self.title = title
-        self.indexes = indexes
         self.axes = self.fig.add_subplot(111)
         self.ylab = y_name
-        self.lab = labels
+        
 
         matplotlib.backends.backend_qt5agg.FigureCanvas.__init__(self,self.fig)
 
@@ -48,17 +49,29 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvas):
         self.model = model
     
     def plot(self):
-
-        self.axes.title.set_text(self.title)
-        self.axes.set_xlabel('Time')
-        self.axes.set_ylabel(self.ylab)
-        data = self.model.getData()
-        for i in self.indexes:
-            header  = data.columns[i]
-            print(self.lab[i-1])
-            self.axes.plot(data[header], label = self.lab[i-1])
-        self.axes.legend()
-        self.draw()
+        
+        if self.variable == 'Temperature': 
+            self.axes.title.set_text(self.title)
+            self.axes.set_xlabel('Time')
+            self.axes.set_ylabel(self.ylab)
+            data = self.model.getData()
+            self.axes.plot(data['Date'], data['T sensor 1'], label = '10cm')
+            self.axes.plot(data['Date'], data['T sensor 2'], label = '20cm')
+            self.axes.plot(data['Date'], data['T sensor 3'], label = '30cm')
+            self.axes.plot(data['Date'], data['T sensor 4'], label = '40cm')
+            self.axes.set_xticklabels(data['Date'], rotation=45)
+            self.axes.legend()
+            self.draw()
+        
+        if self.variable == 'Pressure':
+            self.axes.title.set_text(self.title)
+            self.axes.set_xlabel('Time')
+            self.axes.set_ylabel(self.ylab)
+            data = self.model.getData()
+            self.axes.plot(data['Date'], data['Pressure'])
+            self.axes.set_xticklabels(data['Date'], rotation=45)
+            self.axes.legend()
+            self.draw()
 
 
 
@@ -167,10 +180,15 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.tableViewPressure.setModel(data_to_display_press)
 
 
-        self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", [1,2,3,4], ['10cm', '20cm','30cm','40cm']) # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
+        self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", 'Temperature') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
         self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
         self.plotViewTemp.setModel(data_to_display_temp)
         self.plotViewTemp.plot()
+
+        self.plotViewPress = TimeSeriesPlotCanvas("Pressure evolution", "Pressure (Bar)", 'Pressure') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
+        self.layoutMeasuresTemp.addWidget(self.plotViewPress)
+        self.plotViewPress.setModel(data_to_display_press)
+        self.plotViewPress.plot()
 
 
 
@@ -206,19 +224,27 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
     def compute(self):
         self.compdlg = ComputeDialog()
         res = self.compdlg.exec()
-        if (res == QtWidgets.QDialog.Accepted) :
-            self.runmodel()
+        self.compdlg.pushButton_RunModel.clicked.connect(self.runmodel)
+        self.compdlg.pushButton_Inversion.clicked.connect(self.runinversion)
 
     def runmodel(self) :
-        print('coucou')
         dicParam = self.create_dicParam()
         print(dicParam)
         computeSolveTransi = self.create_computeSolveTransi()
         print(computeSolveTransi)
+        col = Column.from_dict(dicParam)
+        params_tuple = computeSolveTransi[0]
+        col.compute_solve_transi(params_tuple, computeSolveTransi[1])
+        temps_from_tuple = col.temps_solve
+        print(temps_from_tuple)
+        
+    def runinversion(self) :
         paramMCMC = self.create_paramMCMC()
         print(paramMCMC)
-        #col = Column.from_dict(dicParam)
-        #print(col)
+
+    def string_to_date (self, str) :
+        return(datetime.strptime(str,"%Y/%m/%d %H:%M:%S"))
+        
 
     def create_dicParam(self) :
         riv_bed = None
@@ -228,7 +254,6 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         T_measures = []
         sigma_meas_P = None
         sigma_meas_T = None
-        print('coucou dic param')
         #riv_bed
         file = open(self.point.info,"r")
         lines = file.readlines()
@@ -248,10 +273,13 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         temp = shaft_sensor.t_sensor_name
         #dH_measures 
         dfp = self.dataPressure
+        change_date = np.vectorize(self.string_to_date)
+        dfp['Date']= change_date(dfp['Date'])
         dH_measures = list(zip(dfp['Date'].tolist(),list(zip(dfp['Pressure'].tolist(), dfp['Temperature'].tolist()))))
         #T_measures
         dft = self.dataTemperature
-        T_measures = list(zip(dft['Date'].tolist(),dft['T sensor 1'].tolist(),dft['T sensor 2'].tolist(),dft['T sensor 3'].tolist(),dft['T sensor 4'].tolist()))
+        dft['Date']= change_date(dft['Date'])
+        T_measures = list(zip(dft['Date'].tolist(),list(zip(dft['T sensor 1'].tolist(),dft['T sensor 2'].tolist(),dft['T sensor 3'].tolist(),dft['T sensor 4'].tolist()))))
         #sigma_meas_P
         pres = self.point.pressure_sensor
         item_pres = self.sensorModel.item(0)
@@ -268,7 +296,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
                 temp_sensor = item_temp.child(row).data(QtCore.Qt.UserRole)
         sigma_meas_T = temp_sensor.sigma
         dic = {'river_bed': riv_bed, 'depth_sensors' : depth_sensors, 'offset' : offset, 'dH_measures' : dH_measures, 
-                'T_measures' : T_measures, 'Sigma_Meas_T' : sigma_meas_T, 'Sigma_Meas_P' : sigma_meas_P }
+                'T_measures' : T_measures, 'sigma_meas_T' : sigma_meas_T, 'sigma_meas_P' : sigma_meas_P }
         return dic
 
     def create_computeSolveTransi(self) :
@@ -277,7 +305,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         n = self.compdlg.doubleSpinBox_Porosity.value()
         rhos_cs = self.compdlg.doubleSpinBox_ThermalCapacity.value()
         nb_cel = self.compdlg.lineEdit_CellsNumber.text()
-        tuple = (float(moinslog10K), float(lambda_s), float(n), float(rhos_cs), int(nb_cel))
+        tuple = ((float(moinslog10K), float(lambda_s), float(n), float(rhos_cs)), int(float(nb_cel)))
         return tuple
 
     def create_paramMCMC(self) : 
@@ -299,8 +327,8 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
 
         priors = {'moinslog10K' : ((range_moinslog10K_min, range_moinslog10K_max), sigma_moinslog10K), 'lambda_s' : ((range_lambda_s_min, range_lambda_s_max), sigma_lambda_s), 'n' : ((range_n_min, range_n_max), sigma_n), 'rhos_cs' : ((range_rhos_cs_min, range_rhos_cs_max), sigma_rhos_cs)}
 
-        nb_iter = int(self.compdlg.lineEdit_IterationsNumber.text())
-        nb_cel = int(self.compdlg.lineEdit_CellsNumberMCMC.text())
+        nb_iter = int(float(self.compdlg.lineEdit_IterationsNumber.text()))
+        nb_cel = int(float(self.compdlg.lineEdit_CellsNumberMCMC.text()))
 
         tuple = (priors, nb_iter, nb_cel)
 
