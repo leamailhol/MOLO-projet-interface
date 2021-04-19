@@ -24,16 +24,21 @@ class DialogCleanUp(QtWidgets.QDialog,From_DialogCleanUp):
 
         
         f = open("test.py","w+")
-        text = code
+        
+        print (code)
         f.write(code)
         f.close()
 
         exec(open("test.py").read())
 
         dft.to_csv('processed_temperature.csv', sep = ',')
-        dft.to_csv('processed_pressure.csv', sep = ',')
+        dfp.to_csv('processed_pressure.csv', sep = ',')
+
+        print(dft)
+        print(dfp)
 
     def getCode(self):
+
         return self.textEdit.toPlainText()
 
         
