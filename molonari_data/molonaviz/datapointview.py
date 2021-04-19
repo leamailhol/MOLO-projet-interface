@@ -212,12 +212,10 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
             self.tableViewPressure.setModel(data_to_display_press)
 
 
-            self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", 'Temperature') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
             self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
             self.plotViewTemp.setModel(data_to_display_temp)
             self.plotViewTemp.plot()
 
-            self.plotViewPress = TimeSeriesPlotCanvas("Pressure evolution", "Pressure (Bar)", 'Pressure') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
             self.layoutMeasuresTemp.addWidget(self.plotViewPress)
             self.plotViewPress.setModel(data_to_display_press)
             self.plotViewPress.plot()
