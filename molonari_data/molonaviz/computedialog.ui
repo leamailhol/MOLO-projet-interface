@@ -7,20 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>657</width>
-    <height>544</height>
+    <height>380</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Compute Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QGroupBox" name="Parameters">
-     <property name="title">
-      <string>Parameters</string>
-     </property>
-    </widget>
-   </item>
    <item>
     <widget class="QGroupBox" name="ModeleDirect">
      <property name="title">
@@ -40,7 +33,11 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_Lambdas"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_Lambdas">
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
         </item>
         <item row="3" column="0">
          <widget class="QLabel" name="label_5">
@@ -50,13 +47,37 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_Permeability"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_Permeability">
+          <property name="value">
+           <double>4.000000000000000</double>
+          </property>
+         </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_ThermalCapacity"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_ThermalCapacity">
+          <property name="decimals">
+           <number>0</number>
+          </property>
+          <property name="minimum">
+           <double>100000.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>10000000.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>4000000.000000000000000</double>
+          </property>
+         </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_Porosity"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_Porosity">
+          <property name="decimals">
+           <number>2</number>
+          </property>
+          <property name="value">
+           <double>2.000000000000000</double>
+          </property>
+         </widget>
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="label_4">
@@ -80,7 +101,11 @@
          </widget>
         </item>
         <item row="4" column="1">
-         <widget class="QLineEdit" name="lineEdit_CellsNumber"/>
+         <widget class="QLineEdit" name="lineEdit_CellsNumber">
+          <property name="text">
+           <string>100</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -127,6 +152,9 @@
           <property name="accessibleName">
            <string>doubleSpinBox_PermeabilityMax</string>
           </property>
+          <property name="value">
+           <double>3.000000000000000</double>
+          </property>
          </widget>
         </item>
         <item>
@@ -141,6 +169,9 @@
           <property name="accessibleName">
            <string>doubleSpinBox_PermeabilityMax</string>
           </property>
+          <property name="value">
+           <double>10.000000000000000</double>
+          </property>
          </widget>
         </item>
         <item>
@@ -151,7 +182,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_PermeabilitySigma"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_PermeabilitySigma">
+          <property name="value">
+           <double>4.000000000000000</double>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -172,7 +207,14 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_LambdasMin"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_LambdasMin">
+          <property name="singleStep">
+           <double>0.010000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.010000000000000</double>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="label_31">
@@ -182,7 +224,14 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_LambdasMax"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_LambdasMax">
+          <property name="singleStep">
+           <double>0.010000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.250000000000000</double>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="label_35">
@@ -192,7 +241,14 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_LambdasSigma"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_LambdasSigma">
+          <property name="singleStep">
+           <double>0.010000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.060000000000000</double>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -213,7 +269,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_PorosityMin"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_PorosityMin">
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="label_29">
@@ -223,7 +283,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_PorosityMax"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_PorosityMax">
+          <property name="value">
+           <double>5.000000000000000</double>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="label_36">
@@ -233,7 +297,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_PorositySigma"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_PorositySigma">
+          <property name="value">
+           <double>5.000000000000000</double>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -254,7 +322,17 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_ThermalCapacityMin"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_ThermalCapacityMin">
+          <property name="decimals">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <double>10000000.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>1000000.000000000000000</double>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="label_32">
@@ -264,7 +342,17 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_ThermalCapacityMax"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_ThermalCapacityMax">
+          <property name="decimals">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <double>10000000.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>10000000.000000000000000</double>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="label_37">
@@ -274,7 +362,17 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_ThermalCapacitySigma"/>
+         <widget class="QDoubleSpinBox" name="doubleSpinBox_ThermalCapacitySigma">
+          <property name="decimals">
+           <number>0</number>
+          </property>
+          <property name="maximum">
+           <double>1000000.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>100000.000000000000000</double>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -288,7 +386,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_CellsNumberMCMC"/>
+         <widget class="QLineEdit" name="lineEdit_CellsNumberMCMC">
+          <property name="text">
+           <string>41</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="label_33">
@@ -298,7 +400,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_IterationsNumber"/>
+         <widget class="QLineEdit" name="lineEdit_IterationsNumber">
+          <property name="text">
+           <string>200</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
