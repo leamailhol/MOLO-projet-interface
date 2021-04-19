@@ -49,7 +49,7 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg)
         self.model = model
     
     def plot(self):
-        
+        self.axes.cla()
         if self.variable == 'Temperature': 
             self.axes.title.set_text(self.title)
             self.axes.set_xlabel('Time')
@@ -70,7 +70,6 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg)
             data = self.model.getData()
             self.axes.plot(data['Date'], data['Pressure'])
             self.axes.set_xticklabels(data['Date'], rotation=45)
-            self.axes.legend()
             self.draw()
 
 
@@ -196,10 +195,10 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
     
     def cleanup(self):
         clnp = DialogCleanUp() 
-        mycleanupcode = clnp.getCode()
-        print(mycleanupcode)
         res = clnp.exec()
         if (res == QtWidgets.QDialog.Accepted) :
+            mycleanupcode = clnp.getCode()
+            print(mycleanupcode)
             clnp.saveCleanedUpData(mycleanupcode)
             
             self.dataTemperature = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
@@ -212,10 +211,17 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
             self.tableViewPressure.setModel(data_to_display_press)
 
 
-            self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", [1,2,3,4], ['10cm', '20cm','30cm','40cm']) # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
+            self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", 'Temperature') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
             self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
             self.plotViewTemp.setModel(data_to_display_temp)
             self.plotViewTemp.plot()
+
+            self.plotViewPress = TimeSeriesPlotCanvas("Pressure evolution", "Pressure (Bar)", 'Pressure') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
+            self.layoutMeasuresTemp.addWidget(self.plotViewPress)
+            self.plotViewPress.setModel(data_to_display_press)
+            self.plotViewPress.plot()
+
+            
 
     def compute(self):
         self.compdlg = ComputeDialog()
