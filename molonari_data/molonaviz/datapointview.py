@@ -183,9 +183,11 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
     def cleanup(self):
         clnp = DialogCleanUp() 
         mycleanupcode = clnp.getCode()
+        print(mycleanupcode)
         res = clnp.exec()
         if (res == QtWidgets.QDialog.Accepted) :
             clnp.saveCleanedUpData(mycleanupcode)
+            
             self.dataTemperature = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
             data_to_display_temp = pandasModel(self.dataTemperature)
             self.tableViewTemperature.setModel(data_to_display_temp)

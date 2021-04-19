@@ -24,7 +24,8 @@ class DialogCleanUp(QtWidgets.QDialog,From_DialogCleanUp):
 
         
         f = open("test.py","w+")
-        text = code
+        
+        print (code)
         f.write(code)
         f.close()
 
@@ -34,6 +35,7 @@ class DialogCleanUp(QtWidgets.QDialog,From_DialogCleanUp):
         dfp.to_csv('processed_pressure.csv', sep = ',')
 
     def getCode(self):
+
         return self.textEdit.toPlainText()
 
         
