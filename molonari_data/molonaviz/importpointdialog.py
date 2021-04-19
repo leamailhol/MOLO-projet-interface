@@ -24,7 +24,8 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
         self.pushButton_BrowseRawPressure.clicked.connect(self.browseRawPres)
         self.pushButton_BrowseConfig.clicked.connect(self.browseConfig)
         self.pushButton_BrowseNotice.clicked.connect(self.browseNotice)
-        
+        self.pushButtonHelp.clicked.connect(self.popup_help)
+
     def browseInfo (self) :
         dirPath, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Select Point Information")
         self.info = dirPath
@@ -110,4 +111,11 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
         notice = self.lineEdit_Notice.text()
         info = self.info
         return Point(name,info,sensor, shaft, rawTemp, rawPressure, config, notice)
+
+    def popup_help(self) :
+        msg = QtWidgets.QMessageBox()
+        msg.setWindowTitle("Help import new point")
+        msg.setText("Here is a little tutorial : \n To complete the first line, browse and select info file \n Then browse the temperature file, the pressure file, the configuration and the notice" )
+        msg.setIcon(QtWidgets.QMessageBox.Question)
+        x = msg.exec()
 
