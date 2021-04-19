@@ -40,6 +40,7 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvas):
         self.axes = self.fig.add_subplot(111)
         self.ylab = y_name
         
+        
 
         matplotlib.backends.backend_qt5agg.FigureCanvas.__init__(self,self.fig)
 
@@ -49,7 +50,10 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvas):
         self.model = model
     
     def plot(self):
+
         
+        self.axes.cla()
+
         if self.variable == 'Temperature': 
             self.axes.title.set_text(self.title)
             self.axes.set_xlabel('Time')
@@ -70,7 +74,6 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvas):
             data = self.model.getData()
             self.axes.plot(data['Date'], data['Pressure'])
             self.axes.set_xticklabels(data['Date'], rotation=45)
-            self.axes.legend()
             self.draw()
 
 
