@@ -32,14 +32,14 @@ from pyheatmy import *
 
 class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvas):
 
-    def __init__(self, title, y_name, indexes, labels):
-
+    def __init__(self, title, y_name, variable):
+        
+        self.variable = variable
         self.fig = matplotlib.figure.Figure()
         self.title = title
-        self.indexes = indexes
         self.axes = self.fig.add_subplot(111)
         self.ylab = y_name
-        self.lab = labels
+        
 
         matplotlib.backends.backend_qt5agg.FigureCanvas.__init__(self,self.fig)
 
@@ -49,17 +49,29 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvas):
         self.model = model
     
     def plot(self):
-
-        self.axes.title.set_text(self.title)
-        self.axes.set_xlabel('Time')
-        self.axes.set_ylabel(self.ylab)
-        data = self.model.getData()
-        for i in self.indexes:
-            header  = data.columns[i]
-            print(self.lab[i-1])
-            self.axes.plot(data[header], label = self.lab[i-1])
-        self.axes.legend()
-        self.draw()
+        
+        if self.variable == 'Temperature': 
+            self.axes.title.set_text(self.title)
+            self.axes.set_xlabel('Time')
+            self.axes.set_ylabel(self.ylab)
+            data = self.model.getData()
+            self.axes.plot(data['Date'], data['T sensor 1'], label = '10cm')
+            self.axes.plot(data['Date'], data['T sensor 2'], label = '20cm')
+            self.axes.plot(data['Date'], data['T sensor 3'], label = '30cm')
+            self.axes.plot(data['Date'], data['T sensor 4'], label = '40cm')
+            self.axes.set_xticklabels(data['Date'], rotation=45)
+            self.axes.legend()
+            self.draw()
+        
+        if self.variable == 'Pressure':
+            self.axes.title.set_text(self.title)
+            self.axes.set_xlabel('Time')
+            self.axes.set_ylabel(self.ylab)
+            data = self.model.getData()
+            self.axes.plot(data['Date'], data['Pressure'])
+            self.axes.set_xticklabels(data['Date'], rotation=45)
+            self.axes.legend()
+            self.draw()
 
 
 
@@ -168,10 +180,15 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.tableViewPressure.setModel(data_to_display_press)
 
 
-        #self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", [1,2,3,4], ['10cm', '20cm','30cm','40cm']) # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
-        #self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
-        #self.plotViewTemp.setModel(data_to_display_temp)
-        #self.plotViewTemp.plot()
+        self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", 'Temperature') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
+        self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
+        self.plotViewTemp.setModel(data_to_display_temp)
+        self.plotViewTemp.plot()
+
+        self.plotViewPress = TimeSeriesPlotCanvas("Pressure evolution", "Pressure (Bar)", 'Pressure') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
+        self.layoutMeasuresTemp.addWidget(self.plotViewPress)
+        self.plotViewPress.setModel(data_to_display_press)
+        self.plotViewPress.plot()
 
 
 
