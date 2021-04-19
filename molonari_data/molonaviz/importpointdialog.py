@@ -67,6 +67,9 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
         dftemp = pd.read_csv(self.lineEdit_RawTemperature.text(), encoding='utf-8', sep=',', low_memory=False, skiprows=1)
         dftemp.columns = col_temp
         dftemp.index.name='Index'
+        dftemp['Date'] = '20'+dftemp['Date']
+        vect_change_date = np.vectorize(self.change_date)
+        dftemp['Date'] = vect_change_date(dftemp['Date'])
         dftemp = dftemp.astype({'T sensor 1': np.float,'T sensor 2': np.float,'T sensor 3': np.float,'T sensor 4': np.float})
         for i in range(1,5) :
             dftemp[f'T sensor {i}']=dftemp[f'T sensor {i}'] + float(273.5)
@@ -79,6 +82,8 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
         dfpres.columns = col_press 
         dfpres.index.name='Index'
         dfpres = dfpres.dropna()
+        vect_change_date = np.vectorize(self.change_date)
+        dfpres['Date'] = vect_change_date(dfpres['Date'])
         dfpres = dfpres.astype({'Temperature': np.float,'Tension': np.float})
         dfpres['Temperature'] = dfpres['Temperature'] #+float(273.5)
         pres_sensor_name = self.lineEdit_Sensor.text()
@@ -90,6 +95,10 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
         dfpres['Pressure'] = (dfpres['Tension']-pres_sensor.intercept-pres_sensor.dudt*dfpres['Temperature'])/pres_sensor.dudh
         path = os.path.join(self.currentStudy.rootDir, self.lineEdit_PointName.text(),'processed_pressure.csv')
         dfpres.to_csv(path)
+    
+    def change_date(self,str) :
+        a = str.split('-')
+        return '/'.join(a)
 
     def getPoint(self):
         name = self.lineEdit_PointName.text()

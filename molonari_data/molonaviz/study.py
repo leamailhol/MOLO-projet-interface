@@ -52,7 +52,8 @@ class Study(object):
             item.appendRow(QtGui.QStandardItem("intercept = {:.2f}".format(float(sensor.intercept))))
             item.appendRow(QtGui.QStandardItem("dudh = {:.2f}".format(float(sensor.dudh))))
             item.appendRow(QtGui.QStandardItem("dudt = {:.2f}".format(float(sensor.dudt))))
-            
+            item.appendRow(QtGui.QStandardItem(f"Sigma_Meas_P : {sensor.sigma}"))
+
         #capteurs de température
 
         sensortype = self.loadSensorType(temp)
@@ -70,7 +71,7 @@ class Study(object):
             item = QtGui.QStandardItem(no_ext) 
             item.setData(sensor, QtCore.Qt.UserRole)
             item_temp.appendRow(item)
-        
+            item.appendRow(QtGui.QStandardItem(f"Sigma_Meas_T : {sensor.sigma}"))
 
         #shaft de température
 
@@ -118,12 +119,21 @@ class Study(object):
                 sensor.dudh = np.float(line.split(';')[1].strip())
             if line.split(';')[0].strip() == "dU_dT":
                 sensor.dudt = np.float(line.split(';')[1].strip())
+            if line.split(';')[0].strip() == "Sigma_Meas_P":
+                sensor.sigma = np.float(line.split(';')[1].strip())
         return sensor
 
     def loadTemperatureSensor(self, sensorName):
+        sensor = temperatureSensor(sensorName)
         sdir = self.sensorDir
         dirs = os.listdir(sdir)
-        sensor = temperatureSensor(sensorName)
+        temp = dirs[2]
+        pathCalib = os.path.join(self.sensorDir, temp , sensorName)
+        file = open(pathCalib,"r")
+        lines = file.readlines()
+        for line in lines:
+            if line.split(';')[0].strip() == "Sigma_Meas_T":
+                sensor.sigma = float(line.split(';')[1].strip())
         return sensor
 
     def loadTemperatureShaft(self, sensorName):
@@ -141,7 +151,8 @@ class Study(object):
             if line.split(';')[0].strip() == "T_Sensor_Name":
                 sensor.t_sensor_name = line.split(';')[1].strip()
             if line.split(';')[0].strip() == "Sensors_Depth":
-                sensor.sensors_depth = line.split(';')[1].strip()
+                a = line.split(';')[1].strip()
+                sensor.sensors_depth = [float(x) for x in a[1:-1].split(',')]
         return sensor
 
     def loadPoint(self, pointName):

@@ -5,11 +5,14 @@ from study import Study
 from csv import reader
 from sensor import pressureSensor
 import numpy as np
-
+from pyheatmy import *
+from datetime import datetime
 
 
 import sys
-import matplotlib
+import matplotlib.pyplot as plt
+import matplotlib.backends
+from matplotlib.backends import backend_qt5agg
 matplotlib.use('Qt5Agg')
 
 from PyQt5 import QtCore, QtWidgets, QtGui, uic, QtWidgets
@@ -19,6 +22,8 @@ From_DataPointView,dummy = uic.loadUiType(os.path.join(os.path.dirname(__file__)
 
 from dialogcleanup import DialogCleanUp
 from numpy import NaN
+from computedialog import ComputeDialog
+from pyheatmy import *
 
 
 #path_point = 'C:/Users/Léa/Documents/MINES 2A/MOLONARI/INTERFACE/MOLO-projet-interface/molonari_data/study_ordiLea/Point001'
@@ -108,7 +113,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.setupUi(self)
         self.currentStudy = currentStudy
         self.sensorModel = sensorModel
-
+        self.compdlg = None
         # On paramètre le premier onglet
 
         ## Notice
@@ -202,7 +207,126 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
             clnp.saveCleanedUpData(mycleanupcode)
 
     def compute(self):
-        print('compute')
+        self.compdlg = ComputeDialog()
+        res = self.compdlg.exec()
+        self.compdlg.pushButton_RunModel.clicked.connect(self.runmodel)
+        self.compdlg.pushButton_Inversion.clicked.connect(self.runinversion)
+
+    def runmodel(self) :
+        dicParam = self.create_dicParam()
+        print(dicParam)
+        computeSolveTransi = self.create_computeSolveTransi()
+        print(computeSolveTransi)
+        col = Column.from_dict(dicParam)
+        params_tuple = computeSolveTransi[0]
+        col.compute_solve_transi(params_tuple, computeSolveTransi[1])
+        temps_from_tuple = col.temps_solve
+        print(temps_from_tuple)
+        
+    def runinversion(self) :
+        paramMCMC = self.create_paramMCMC()
+        print(paramMCMC)
+
+    def string_to_date (self, str) :
+        return(datetime.strptime(str,"%Y/%m/%d %H:%M:%S"))
+        
+
+    def create_dicParam(self) :
+        riv_bed = None
+        depth_sensors = None
+        offset = None
+        dH_measures = None
+        T_measures = []
+        sigma_meas_P = None
+        sigma_meas_T = None
+        #riv_bed
+        file = open(self.point.info,"r")
+        lines = file.readlines()
+        for line in lines:
+            if line.split(';')[0].strip() == "River_Bed":
+                riv_bed = float(line.split(';')[1].strip())
+            if line.split(';')[0].strip() == "Delta_h":
+                offset = float(line.split(';')[1].strip())
+        #depth_sensors
+        shaft = self.point.shaft
+        item_shafts = self.sensorModel.item(2)
+        shaft_sensor = None
+        for row in range(item_shafts.rowCount()):
+            if item_shafts.child(row).text() == shaft :
+                shaft_sensor = item_shafts.child(row).data(QtCore.Qt.UserRole)
+        depth_sensors = shaft_sensor.sensors_depth
+        temp = shaft_sensor.t_sensor_name
+        #dH_measures 
+        dfp = self.dataPressure
+        change_date = np.vectorize(self.string_to_date)
+        dfp['Date']= change_date(dfp['Date'])
+        dH_measures = list(zip(dfp['Date'].tolist(),list(zip(dfp['Pressure'].tolist(), dfp['Temperature'].tolist()))))
+        #T_measures
+        dft = self.dataTemperature
+        dft['Date']= change_date(dft['Date'])
+        T_measures = list(zip(dft['Date'].tolist(),list(zip(dft['T sensor 1'].tolist(),dft['T sensor 2'].tolist(),dft['T sensor 3'].tolist(),dft['T sensor 4'].tolist()))))
+        #sigma_meas_P
+        pres = self.point.pressure_sensor
+        item_pres = self.sensorModel.item(0)
+        pres_sensor = None
+        for row in range(item_pres.rowCount()):
+            if item_pres.child(row).text() == pres :
+                pres_sensor = item_pres.child(row).data(QtCore.Qt.UserRole)
+        sigma_meas_P = pres_sensor.sigma
+        #sigma_meas_T
+        item_temp = self.sensorModel.item(1)
+        temp_sensor = None
+        for row in range(item_temp.rowCount()):
+            if item_temp.child(row).text() == temp :
+                temp_sensor = item_temp.child(row).data(QtCore.Qt.UserRole)
+        sigma_meas_T = temp_sensor.sigma
+        dic = {'river_bed': riv_bed, 'depth_sensors' : depth_sensors, 'offset' : offset, 'dH_measures' : dH_measures, 
+                'T_measures' : T_measures, 'sigma_meas_T' : sigma_meas_T, 'sigma_meas_P' : sigma_meas_P }
+        return dic
+
+    def create_computeSolveTransi(self) :
+        moinslog10K = self.compdlg.doubleSpinBox_Permeability.value()
+        lambda_s = self.compdlg.doubleSpinBox_Lambdas.value()
+        n = self.compdlg.doubleSpinBox_Porosity.value()
+        rhos_cs = self.compdlg.doubleSpinBox_ThermalCapacity.value()
+        nb_cel = self.compdlg.lineEdit_CellsNumber.text()
+        tuple = ((float(moinslog10K), float(lambda_s), float(n), float(rhos_cs)), int(float(nb_cel)))
+        return tuple
+
+    def create_paramMCMC(self) : 
+        range_moinslog10K_min = float(self.compdlg.doubleSpinBox_PermeabilityMin.value())
+        range_moinslog10K_max = float(self.compdlg.doubleSpinBox_PermeabilityMax.value())
+        sigma_moinslog10K = float(self.compdlg.doubleSpinBox_PermeabilitySigma.value())
+
+        range_lambda_s_min = float(self.compdlg.doubleSpinBox_LambdasMin.value())
+        range_lambda_s_max = float(self.compdlg.doubleSpinBox_LambdasMax.value())
+        sigma_lambda_s = float(self.compdlg.doubleSpinBox_LambdasSigma.value())
+
+        range_n_min = float(self.compdlg.doubleSpinBox_PorosityMin.value())
+        range_n_max = float(self.compdlg.doubleSpinBox_PorosityMax.value())
+        sigma_n = float(self.compdlg.doubleSpinBox_PorositySigma.value())
+
+        range_rhos_cs_min = float(self.compdlg.doubleSpinBox_ThermalCapacityMin.value())
+        range_rhos_cs_max = float(self.compdlg.doubleSpinBox_ThermalCapacityMax.value())
+        sigma_rhos_cs = float(self.compdlg.doubleSpinBox_ThermalCapacitySigma.value())
+
+        priors = {'moinslog10K' : ((range_moinslog10K_min, range_moinslog10K_max), sigma_moinslog10K), 'lambda_s' : ((range_lambda_s_min, range_lambda_s_max), sigma_lambda_s), 'n' : ((range_n_min, range_n_max), sigma_n), 'rhos_cs' : ((range_rhos_cs_min, range_rhos_cs_max), sigma_rhos_cs)}
+
+        nb_iter = int(float(self.compdlg.lineEdit_IterationsNumber.text()))
+        nb_cel = int(float(self.compdlg.lineEdit_CellsNumberMCMC.text()))
+
+        tuple = (priors, nb_iter, nb_cel)
+
+        return tuple
+
+
+
+
+
+
+        
+
+
     
 
     
