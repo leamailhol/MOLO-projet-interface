@@ -76,6 +76,69 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg)
             self.axes.set_xticklabels(data['Date'], rotation=45)
             self.draw()
 
+        if self.variable =='MatrixTemp':
+
+            self.axes.title.set_text(self.title)
+            self.axes.set_xlabel('Depth')
+            self.axes.set_ylabel(self.ylab)
+            data = np.array(self.model.getData())
+            matrix = np.delete(data,0,1)
+            im = self.axes.imshow(matrix, aspect='auto')
+            self.fig.colorbar(im)
+            self.draw()
+
+        if self.variable == 'DepthDirectTemp':
+
+            self.axes.title.set_text(self.title)
+            self.axes.set_xlabel('Temperature')
+            self.axes.set_ylabel(self.ylab)
+            data = self.model.getData()
+            row1 = np.array(data.columns )
+            data = np.vstack((row1,np.array(data)))
+            data = np.delete(data,0,1)
+            self.axes.plot(data[1,:], data[0,:], label = 'Time 1')
+            self.axes.plot(data[2,:], data[0,:], label = 'Time 2')
+            self.axes.plot(data[3,:], data[0,:], label = 'Time 3')
+            self.axes.plot(data[4,:], data[0,:], label = 'Time 4')
+            self.axes.legend()
+            self.axes.set_yticks(np.arange(0,99, 10))
+            self.axes.invert_yaxis()
+            self.draw()
+        
+        if self.variable =='MatrixFlow':
+
+            self.axes.title.set_text(self.title)
+            self.axes.set_xlabel('Depth')
+            self.axes.set_ylabel(self.ylab)
+            data = np.array(self.model.getData())
+            matrix = np.delete(data,0,1)
+            im = self.axes.imshow(matrix, aspect='auto')
+            self.fig.colorbar(im)
+            self.draw()
+        
+        if self.variable == 'DepthDirectFlow':
+
+            self.axes.title.set_text(self.title)
+            self.axes.set_xlabel('Flow')
+            self.axes.set_ylabel(self.ylab)
+            data = self.model.getData()
+            row1 = np.array(data.columns )
+            data = np.vstack((row1,np.array(data)))
+            data = np.delete(data,0,1)
+            self.axes.plot(data[1,:], data[0,:], label = 'Time 1')
+            self.axes.plot(data[2,:], data[0,:], label = 'Time 2')
+            self.axes.plot(data[3,:], data[0,:], label = 'Time 3')
+            self.axes.plot(data[4,:], data[0,:], label = 'Time 4')
+            self.axes.legend()
+            self.axes.set_yticks(np.arange(0,99, 10))
+            self.axes.invert_yaxis()
+            self.draw()
+           
+
+
+
+
+
 
 
 class pandasModel(QtCore.QAbstractTableModel):
@@ -174,25 +237,57 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
 
         self.pushButtonCompute.clicked.connect(self.compute)
 
-        
+        # Récupération des datas 
         self.dataTemperature = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
         data_to_display_temp = pandasModel(self.dataTemperature)
         self.tableViewTemperature.setModel(data_to_display_temp)
+
+        #Plots 
+        self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", 'Temperature') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
+        self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
+        self.plotViewTemp.setModel(data_to_display_temp)
+        self.plotViewTemp.plot()
         
         
         self.dataPressure = pd.read_csv('processed_pressure.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
         data_to_display_press = pandasModel(self.dataPressure)
         self.tableViewPressure.setModel(data_to_display_press)
 
-        self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", 'Temperature') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
-        self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
-        self.plotViewTemp.setModel(data_to_display_temp)
-        self.plotViewTemp.plot()
 
         self.plotViewPress = TimeSeriesPlotCanvas("Pressure evolution", "Pressure (Bar)", 'Pressure') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
         self.layoutMeasuresTemp.addWidget(self.plotViewPress)
         self.plotViewPress.setModel(data_to_display_press)
         self.plotViewPress.plot()
+
+
+        self.dataDirectTemp = pd.read_csv('res_temps.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        data_to_display_directTemp = pandasModel(self.dataDirectTemp)
+
+        self.DirectViewMat = TimeSeriesPlotCanvas("Temperature's Matrix", "Time", 'MatrixTemp')
+        self.layoutDirect.addWidget(self.DirectViewMat)
+        self.DirectViewMat.setModel(data_to_display_directTemp)
+        self.DirectViewMat.plot()
+
+        self.DirectViewDep = TimeSeriesPlotCanvas("Temperature profile", "Depth", 'DepthDirectTemp')
+        self.layoutDirect.addWidget(self.DirectViewDep)
+        self.DirectViewDep.setModel(data_to_display_directTemp)
+        self.DirectViewDep.plot()
+
+        self.dataDirectFlow = pd.read_csv('res_flows.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        data_to_display_directFlow = pandasModel(self.dataDirectFlow)
+        self.tableViewPressure.setModel(data_to_display_directFlow)
+
+        self.DirectViewMatFlow = TimeSeriesPlotCanvas("Flows Matrix", "Time", 'MatrixFlow')
+        self.layoutDirect.addWidget(self.DirectViewMatFlow)
+        self.DirectViewMatFlow.setModel(data_to_display_directFlow)
+        self.DirectViewMatFlow.plot()
+
+        self.DirectViewDepFlow = TimeSeriesPlotCanvas("Flow profile", "Depth", 'DepthDirectFlow')
+        self.layoutDirect.addWidget(self.DirectViewDepFlow)
+        self.DirectViewDepFlow.setModel(data_to_display_directFlow)
+        self.DirectViewDepFlow.plot()
+
+        
 
 
     def reset(self):
