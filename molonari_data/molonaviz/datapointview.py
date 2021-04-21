@@ -105,18 +105,8 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg)
             self.axes.invert_yaxis()
             self.draw()
         
-        if self.variable =='MatrixFlow':
-
-            self.axes.title.set_text(self.title)
-            self.axes.set_xlabel('Depth')
-            self.axes.set_ylabel(self.ylab)
-            data = np.array(self.model.getData())
-            matrix = np.delete(data,0,1)
-            im = self.axes.imshow(matrix, aspect='auto')
-            self.fig.colorbar(im)
-            self.draw()
         
-        if self.variable == 'DepthDirectFlow':
+        if self.variable == 'DirectFlow':
 
             self.axes.title.set_text(self.title)
             self.axes.set_xlabel('Flow')
@@ -124,7 +114,7 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg)
             data = self.model.getData()
             row1 = np.array(data.columns )
             data = np.vstack((row1,np.array(data)))
-            data = np.delete(data,0,1)
+            data = np.delete(data,0,0)
             self.axes.plot(data[1,:], data[0,:], label = 'Time 1')
             self.axes.plot(data[2,:], data[0,:], label = 'Time 2')
             self.axes.plot(data[3,:], data[0,:], label = 'Time 3')
