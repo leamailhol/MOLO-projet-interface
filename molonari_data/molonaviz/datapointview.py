@@ -166,9 +166,20 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.currentStudy = currentStudy
         self.sensorModel = sensorModel
         self.compdlg = None
+        self.col = None
+        self.dataPressure = None
+        self.dataTemperature = None 
+
         # On paramètre le premier onglet
-        self.temps_from_tuple = None
-        self.col = None 
+        self.unit = self.comboBox_TempUnit.currentText()
+        self.lineEdit_Pressure.setText(self.point.pressure_sensor)
+        self.lineEdit_Shaft.setText(self.point.shaft)
+        file = open(self.point.info,"r")
+        lines = file.readlines()
+        for line in lines:
+            if line.split(';')[0].strip() == "Meas_Date":
+                meas_date = line.split(';')[1].strip()
+        self.lineEdit_Date.setText(meas_date)
 
         ## Notice
 
@@ -215,36 +226,56 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         ## Info
 
         self.InstallationImage.setPixmap(QtGui.QPixmap('imp_config.png'))
-
-
         self.pushButtonReset.clicked.connect(self.reset)
-
         self.pushButtonCleanup.clicked.connect(self.cleanup)
-
         self.pushButtonCompute.clicked.connect(self.compute)
 
-        # Récupération des datas 
-        self.dataTemperature = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        self.comboBox_TempUnit.currentTextChanged.connect(self.changeunit)
+        self.checkBox_Raw.stateChanged.connect(self.showrawdata)
+
+        #Temperature
+        if self.checkBox_Raw.isChecked() :
+            col_temp = ['Index','Date','T sensor 1','T sensor 2', 'T sensor 3', 'T sensor 4']
+            self.dataTemperature = pd.read_csv('imp_raw_temperature.csv', encoding='utf-8', sep=';', low_memory=False, skiprows=1)
+            self.dataTemperature.columns = col_temp
+            self.dataTemperature.index.name='Index'
+            if self.unit == '°C' :
+                for i in range(1,5) :
+                    self.dataTemperature[f'T sensor {i}'] = self.dataTemperature[f'T sensor {i}'] - float(273.5)
+        else : 
+            self.dataTemperature = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+            if self.unit == '°C' :
+                for i in range(1,5) :
+                    self.dataTemperature[f'T sensor {i}'] = self.dataTemperature[f'T sensor {i}'] - float(273.5)
         data_to_display_temp = pandasModel(self.dataTemperature)
         self.tableViewTemperature.setModel(data_to_display_temp)
 
-        #Plots 
-        self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", 'Temperature') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
+        # Récupération des datas 
+        self.dataTemperature = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        
+        #Pressure
+        if self.checkBox_Raw.isChecked() :
+            self.dataPressure = pd.read_csv('imp_raw_pressure.csv', encoding='utf-8', sep=';', low_memory=False, skiprows=0)
+            if self.unit == '°C' :
+                self.dataPressure['Temperature'] = self.dataPressure['Temperature']- float(273.5)
+        else :
+            self.dataPressure = pd.read_csv('processed_pressure.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+            if self.unit == '°C' :
+                self.dataPressure['Temperature'] = self.dataPressure['Temperature']- float(273.5)
+        data_to_display_press = pandasModel(self.dataPressure)
+        self.tableViewPressure.setModel(data_to_display_press)
+
+        #Plot 
+        self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature", 'Temperature') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
         self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
         self.plotViewTemp.setModel(data_to_display_temp)
         self.plotViewTemp.plot()
-        
-        
-        self.dataPressure = pd.read_csv('processed_pressure.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
-        data_to_display_press = pandasModel(self.dataPressure)
-        self.tableViewPressure.setModel(data_to_display_press)
 
 
         self.plotViewPress = TimeSeriesPlotCanvas("Pressure evolution", "Pressure (Bar)", 'Pressure') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
         self.layoutMeasuresTemp.addWidget(self.plotViewPress)
         self.plotViewPress.setModel(data_to_display_press)
         self.plotViewPress.plot()
-
 
         self.dataDirectTemp = pd.read_csv('res_temps.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
         data_to_display_directTemp = pandasModel(self.dataDirectTemp)
@@ -269,6 +300,61 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.DirectViewDepFlow.setModel(data_to_display_directFlow)
         self.DirectViewDepFlow.plot()
 
+
+    def changeunit(self) :
+        self.unit = self.comboBox_TempUnit.currentText()
+        if self.unit == '°C' :
+            for i in range(1,5) :
+                self.dataTemperature[f'T sensor {i}'] = self.dataTemperature[f'T sensor {i}'] - float(273.5)
+            self.dataPressure['Temperature'] = self.dataPressure['Temperature']- float(273.5)
+        else :
+            for i in range(1,5) :
+                self.dataTemperature[f'T sensor {i}'] = self.dataTemperature[f'T sensor {i}'] + float(273.5)
+            self.dataPressure['Temperature'] = self.dataPressure['Temperature'] + float(273.5)
+        data_to_display_temp = pandasModel(self.dataTemperature)
+        self.tableViewTemperature.setModel(data_to_display_temp)
+        data_to_display_press = pandasModel(self.dataPressure)
+        self.tableViewPressure.setModel(data_to_display_press)
+
+        self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
+        self.plotViewTemp.setModel(data_to_display_temp)
+        self.plotViewTemp.plot()
+    
+    def showrawdata(self) :
+        #Pres
+        if self.checkBox_Raw.isChecked() :
+            col_press = ['Date','Tension','Temperature']
+            self.dataPressure = pd.read_csv('imp_raw_pressure.csv', encoding='utf-8', sep=';', low_memory=False, skiprows=0)
+            self.dataPressure.columns = col_press
+            self.dataPressure.index.name='Index'
+            self.dataPressure = self.dataPressure.dropna()
+            self.dataPressure = self.dataPressure.astype({'Temperature': np.float})
+            if self.unit == '°C' :
+                self.dataPressure['Temperature'] = self.dataPressure['Temperature']- float(273.5)
+        else :
+            self.dataPressure = pd.read_csv('processed_pressure.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+            if self.unit == '°C' :
+                self.dataPressure['Temperature'] = self.dataPressure['Temperature'] - float(273.5)
+        data_to_display_press = pandasModel(self.dataPressure)
+        self.tableViewPressure.setModel(data_to_display_press)
+        #Temp
+        if self.checkBox_Raw.isChecked() :
+            col_temp = ['Index','Date','T sensor 1','T sensor 2', 'T sensor 3', 'T sensor 4']
+            self.dataTemperature = pd.read_csv('imp_raw_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=1)
+            self.dataTemperature.columns = col_temp
+            self.dataTemperature.index.name='Index'
+            self.dataTemperature = self.dataTemperature.dropna()
+            self.dataTemperature = self.dataTemperature.astype({'T sensor 1': np.float,'T sensor 2': np.float,'T sensor 3': np.float,'T sensor 4': np.float})
+            if self.unit == 'K' :
+                for i in range(1,5) :
+                    self.dataTemperature[f'T sensor {i}'] = self.dataTemperature[f'T sensor {i}'] + float(273.5)
+        else : 
+            self.dataTemperature = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+            if self.unit == '°C' :
+                for i in range(1,5) :
+                    self.dataTemperature[f'T sensor {i}'] = self.dataTemperature[f'T sensor {i}'] - float(273.5)
+        data_to_display_temp = pandasModel(self.dataTemperature)
+        self.tableViewTemperature.setModel(data_to_display_temp)
         
 
 
@@ -360,6 +446,12 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         rho = self.col.get_all_rhos_cs()
         dfrho = pd.DataFrame(rho)
         dfrho.to_csv(f'{self.path_point}/res_all_rho_cs.csv')
+        times = self.col.get_times_mcmc()
+        dftime = pd.DataFrame(times)
+        dftime.to_csv(f'{self.path_point}/res_time_MCMC.csv')
+        depths = self.col.get_depths_mcmc()
+        dfdep = pd.DataFrame(depths)
+        dfdep.to_csv(f'{self.path_point}/res_depths_MCMC.csv')
         for quantile in self.compdlg.list_quantile :
             quantt = self.col.get_temps_quantile(quantile)
             dfquantt = pd.DataFrame(quantt)
@@ -367,6 +459,10 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
             #quantf = self.col.get_flows_quantile(quantile)
             #dfquantf = pd.DataFrame(quantf)
             #dfquantf.to_csv(f'{self.path_point}/res_flows_{quantile*100}.csv')
+            #for param in ['moinslog10K','lambda_s','n', 'rho_cs'] : 
+                #df = pd.DataFrame(self.col.get_moinslog10K_quantile(quantile))
+                #df.to_csv(f'{self.path_point}/res_{param}_{quantile*100}.csv')
+            
 
     def string_to_date (self, str) :
         return(datetime.strptime(str,"%Y/%m/%d %H:%M:%S"))
