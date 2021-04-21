@@ -32,7 +32,7 @@ from pyheatmy import *
 
 class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg):
 
-    def __init__(self, title, y_name, variable):
+    def __init__(self, title, y_name = None , variable = None):
         
         self.variable = variable
         self.fig = matplotlib.figure.Figure()
@@ -119,6 +119,45 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg)
             print()
             self.axes.plot(data['0'] ,data['1'])
             self.draw()
+
+        if self.variable == 'HistK' :
+            self.axes.title.set_text(self.title)
+            data = self.model.getData()
+            print(data)
+            print(data['0'])
+            self.axes.hist(data['0'], bins=7, edgecolor = 'white')
+            self.draw()
+
+        if self.variable == 'HistLambda' :
+            self.axes.title.set_text(self.title)
+            data = self.model.getData()
+            print(data)
+            print(data['0'])
+            self.axes.hist(data['0'], bins=7, edgecolor = 'white')
+            self.draw()
+        
+        if self.variable == 'Histn' :
+            self.axes.title.set_text(self.title)
+            data = self.model.getData()
+            print(data)
+            print(data['0'])
+            self.axes.hist(data['0'], bins=7, edgecolor = 'white')
+            self.draw()
+        
+        if self.variable == 'Histrho' :
+            self.axes.title.set_text(self.title)
+            data = self.model.getData()
+            print(data)
+            print(data['0'])
+            self.axes.hist(data['0'], bins=7, edgecolor = 'white')
+            self.draw()
+
+
+
+
+
+
+        
            
 
 
@@ -247,6 +286,8 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
             if self.unit == '°C' :
                 for i in range(1,5) :
                     self.dataTemperature[f'T sensor {i}'] = self.dataTemperature[f'T sensor {i}'] - float(273.5)
+            change_date = np.vectorize(self.string_to_date)
+            self.dataTemperature['Date']= change_date(self.dataTemperature['Date'])
         data_to_display_temp = pandasModel(self.dataTemperature)
         self.tableViewTemperature.setModel(data_to_display_temp)
 
@@ -262,6 +303,8 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
             self.dataPressure = pd.read_csv('processed_pressure.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
             if self.unit == '°C' :
                 self.dataPressure['Temperature'] = self.dataPressure['Temperature']- float(273.5)
+            change_date = np.vectorize(self.string_to_date)
+            self.dataPressure['Date']= change_date(self.dataPressure['Date'])
         data_to_display_press = pandasModel(self.dataPressure)
         self.tableViewPressure.setModel(data_to_display_press)
 
@@ -292,13 +335,45 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
 
         self.dataDirectFlow = pd.read_csv('res_flows.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
         data_to_display_directFlow = pandasModel(self.dataDirectFlow)
-        self.tableViewPressure.setModel(data_to_display_directFlow)
+        #self.tableViewPressure.setModel(data_to_display_directFlow)
 
 
         self.DirectViewDepFlow = TimeSeriesPlotCanvas("Flow evolution", "Flow", 'DirectFlow')
         self.layoutDirect.addWidget(self.DirectViewDepFlow)
         self.DirectViewDepFlow.setModel(data_to_display_directFlow)
         self.DirectViewDepFlow.plot()
+
+        self.dataMoinslogK = pd.read_csv('res_all_moinslog10K.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        data_to_display_moinslog10K = pandasModel(self.dataMoinslogK)
+
+        self.MCMCViewHistK = TimeSeriesPlotCanvas("- log K", None , 'HistK')
+        self.layoutInversion.addWidget(self.MCMCViewHistK)
+        self.MCMCViewHistK.setModel(data_to_display_moinslog10K)
+        self.MCMCViewHistK.plot()
+
+        self.datalambda = pd.read_csv('res_all_lambda_s.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        data_to_display_lambda = pandasModel(self.datalambda)
+
+        self.MCMCViewHistlambda = TimeSeriesPlotCanvas("lambda s", None , 'Histlambda')
+        self.layoutInversion.addWidget(self.MCMCViewHistlambda)
+        self.MCMCViewHistlambda.setModel(data_to_display_lambda)
+        self.MCMCViewHistlambda.plot()
+
+        self.datan = pd.read_csv('res_all_n.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        data_to_display_n = pandasModel(self.datan)
+
+        self.MCMCViewHistn = TimeSeriesPlotCanvas("n", None , 'Histn')
+        self.layoutInversion.addWidget(self.MCMCViewHistn)
+        self.MCMCViewHistn.setModel(data_to_display_n)
+        self.MCMCViewHistn.plot()
+
+        self.datarho = pd.read_csv('res_all_rho_cs.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        data_to_display_rho = pandasModel(self.datarho)
+
+        self.MCMCViewHistrho = TimeSeriesPlotCanvas("rho * cs", None , 'Histrho')
+        self.layoutInversion.addWidget(self.MCMCViewHistrho)
+        self.MCMCViewHistrho.setModel(data_to_display_rho)
+        self.MCMCViewHistrho.plot()
 
 
     def changeunit(self) :
@@ -335,6 +410,8 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
             self.dataPressure = pd.read_csv('processed_pressure.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
             if self.unit == '°C' :
                 self.dataPressure['Temperature'] = self.dataPressure['Temperature'] - float(273.5)
+            change_date = np.vectorize(self.string_to_date)
+            self.dataPressure['Date']= change_date(self.dataPressure['Date'])
         data_to_display_press = pandasModel(self.dataPressure)
         self.tableViewPressure.setModel(data_to_display_press)
         #Temp
@@ -353,6 +430,8 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
             if self.unit == '°C' :
                 for i in range(1,5) :
                     self.dataTemperature[f'T sensor {i}'] = self.dataTemperature[f'T sensor {i}'] - float(273.5)
+            change_date = np.vectorize(self.string_to_date)
+            self.dataTemperature['Date']= change_date(self.dataTemperature['Date'])
         data_to_display_temp = pandasModel(self.dataTemperature)
         self.tableViewTemperature.setModel(data_to_display_temp)
         
@@ -390,10 +469,18 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
             
 
     def compute(self):
-        self.compdlg = ComputeDialog()
-        self.compdlg.pushButton_RunModel.clicked.connect(self.runmodel)
-        self.compdlg.pushButton_Inversion.clicked.connect(self.runinversion)
-        self.compdlg.exec()
+        self.unit = self.comboBox_TempUnit.currentText()
+        if self.unit == '°C' or self.checkBox_Raw.isChecked():
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowTitle("Can't compute")
+            msg.setText("You can compute only if you are showing processed data in Kelvin" )
+            msg.setIcon(QtWidgets.QMessageBox.Warning)
+            msg.exec()
+        else : 
+            self.compdlg = ComputeDialog()
+            self.compdlg.pushButton_RunModel.clicked.connect(self.runmodel)
+            self.compdlg.pushButton_Inversion.clicked.connect(self.runinversion)
+            self.compdlg.exec()
             
 
     def runmodel(self) :
@@ -495,12 +582,9 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         temp = shaft_sensor.t_sensor_name
         #dH_measures 
         dfp = self.dataPressure
-        change_date = np.vectorize(self.string_to_date)
-        dfp['Date']= change_date(dfp['Date'])
         dH_measures = list(zip(dfp['Date'].tolist(),list(zip(dfp['Pressure'].tolist(), dfp['Temperature'].tolist()))))
         #T_measures
         dft = self.dataTemperature
-        dft['Date']= change_date(dft['Date'])
         T_measures = list(zip(dft['Date'].tolist(),list(zip(dft['T sensor 1'].tolist(),dft['T sensor 2'].tolist(),dft['T sensor 3'].tolist(),dft['T sensor 4'].tolist()))))
         #sigma_meas_P
         pres = self.point.pressure_sensor
