@@ -268,9 +268,9 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         all_params = self.col.get_all_params()
         dfparams = pd.DataFrame(all_params)
         dfparams.to_csv(f'{self.path_point}/res_all_params.csv')
-        best_params = self.col.get_best_param()
-        dfbest = pd.DataFrame(best_params)
-        dfbest.to_csv(f'{self.path_point}/res_best_params.csv')
+        #best_params = self.col.get_best_param()
+        #dfbest = pd.DataFrame(best_params)
+        #dfbest.to_csv(f'{self.path_point}/res_best_params.csv')
         moinslog10K = self.col.get_all_moinslog10K()
         dfK = pd.DataFrame(moinslog10K)
         dfK.to_csv(f'{self.path_point}/res_all_moinslog10K.csv')
@@ -283,6 +283,13 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         rho = self.col.get_all_rhos_cs()
         dfrho = pd.DataFrame(rho)
         dfrho.to_csv(f'{self.path_point}/res_all_rho_cs.csv')
+        for quantile in self.compdlg.list_quantile :
+            quantt = self.col.get_temps_quantile(quantile)
+            dfquantt = pd.DataFrame(quantt)
+            dfquantt.to_csv(f'{self.path_point}/res_temps_{quantile*100}.csv')
+            #quantf = self.col.get_flows_quantile(quantile)
+            #dfquantf = pd.DataFrame(quantf)
+            #dfquantf.to_csv(f'{self.path_point}/res_flows_{quantile*100}.csv')
 
     def string_to_date (self, str) :
         return(datetime.strptime(str,"%Y/%m/%d %H:%M:%S"))
@@ -372,7 +379,9 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         nb_iter = int(float(self.compdlg.lineEdit_IterationsNumber.text()))
         nb_cel = int(float(self.compdlg.lineEdit_CellsNumberMCMC.text()))
 
-        tuple = (priors, nb_iter, nb_cel)
+        quantile = self.compdlg.list_quantile
+
+        tuple = (priors, nb_iter, nb_cel, quantile)
 
         return tuple
 
