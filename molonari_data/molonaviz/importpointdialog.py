@@ -117,5 +117,5 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
         msg.setWindowTitle("Help import new point")
         msg.setText("Here is a little tutorial : \n To complete the first line, browse and select info file \n Then browse the temperature file, the pressure file, the configuration and the notice" )
         msg.setIcon(QtWidgets.QMessageBox.Question)
-        x = msg.exec()
+        msg.exec()
 
