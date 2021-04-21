@@ -74,6 +74,8 @@ class MainWindow(QtWidgets.QMainWindow,From_MainWindow):
         datapointview.setWindowTitle(self.clickedPoint.name)
         self.mdiArea.addSubWindow(datapointview)    
         datapointview.show()
+
+        
     
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
