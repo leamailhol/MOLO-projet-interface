@@ -266,12 +266,6 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
 
         # Récupération des datas 
         self.dataTemperature = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
-
-        #Plots 
-        self.plotViewTemp = TimeSeriesPlotCanvas("Temperature evolution", "Temperature (K)", 'Temperature') # Titre du grahique + indice des séries à afficher (=  colonnes dans le data frame)
-        self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
-        self.plotViewTemp.setModel(data_to_display_temp)
-        self.plotViewTemp.plot()
         
         #Pressure
         if self.checkBox_Raw.isChecked() :
@@ -296,6 +290,34 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.layoutMeasuresTemp.addWidget(self.plotViewPress)
         self.plotViewPress.setModel(data_to_display_press)
         self.plotViewPress.plot()
+
+        self.dataDirectTemp = pd.read_csv('res_temps.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        data_to_display_directTemp = pandasModel(self.dataDirectTemp)
+
+        self.DirectViewMat = TimeSeriesPlotCanvas("Temperature's Matrix", "Time", 'MatrixTemp')
+        self.layoutDirect.addWidget(self.DirectViewMat)
+        self.DirectViewMat.setModel(data_to_display_directTemp)
+        self.DirectViewMat.plot()
+
+        self.DirectViewDep = TimeSeriesPlotCanvas("Temperature profile", "Depth", 'DepthDirectTemp')
+        self.layoutDirect.addWidget(self.DirectViewDep)
+        self.DirectViewDep.setModel(data_to_display_directTemp)
+        self.DirectViewDep.plot()
+
+        self.dataDirectFlow = pd.read_csv('res_flows.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        data_to_display_directFlow = pandasModel(self.dataDirectFlow)
+        self.tableViewPressure.setModel(data_to_display_directFlow)
+
+        self.DirectViewMatFlow = TimeSeriesPlotCanvas("Flows Matrix", "Time", 'MatrixFlow')
+        self.layoutDirect.addWidget(self.DirectViewMatFlow)
+        self.DirectViewMatFlow.setModel(data_to_display_directFlow)
+        self.DirectViewMatFlow.plot()
+
+        self.DirectViewDepFlow = TimeSeriesPlotCanvas("Flow profile", "Depth", 'DepthDirectFlow')
+        self.layoutDirect.addWidget(self.DirectViewDepFlow)
+        self.DirectViewDepFlow.setModel(data_to_display_directFlow)
+        self.DirectViewDepFlow.plot()
+
 
     def changeunit(self) :
         self.unit = self.comboBox_TempUnit.currentText()
@@ -351,35 +373,6 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
                     self.dataTemperature[f'T sensor {i}'] = self.dataTemperature[f'T sensor {i}'] - float(273.5)
         data_to_display_temp = pandasModel(self.dataTemperature)
         self.tableViewTemperature.setModel(data_to_display_temp)
-
-
-        self.dataDirectTemp = pd.read_csv('res_temps.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
-        data_to_display_directTemp = pandasModel(self.dataDirectTemp)
-
-        self.DirectViewMat = TimeSeriesPlotCanvas("Temperature's Matrix", "Time", 'MatrixTemp')
-        self.layoutDirect.addWidget(self.DirectViewMat)
-        self.DirectViewMat.setModel(data_to_display_directTemp)
-        self.DirectViewMat.plot()
-
-        self.DirectViewDep = TimeSeriesPlotCanvas("Temperature profile", "Depth", 'DepthDirectTemp')
-        self.layoutDirect.addWidget(self.DirectViewDep)
-        self.DirectViewDep.setModel(data_to_display_directTemp)
-        self.DirectViewDep.plot()
-
-        self.dataDirectFlow = pd.read_csv('res_flows.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
-        data_to_display_directFlow = pandasModel(self.dataDirectFlow)
-        self.tableViewPressure.setModel(data_to_display_directFlow)
-
-        self.DirectViewMatFlow = TimeSeriesPlotCanvas("Flows Matrix", "Time", 'MatrixFlow')
-        self.layoutDirect.addWidget(self.DirectViewMatFlow)
-        self.DirectViewMatFlow.setModel(data_to_display_directFlow)
-        self.DirectViewMatFlow.plot()
-
-        self.DirectViewDepFlow = TimeSeriesPlotCanvas("Flow profile", "Depth", 'DepthDirectFlow')
-        self.layoutDirect.addWidget(self.DirectViewDepFlow)
-        self.DirectViewDepFlow.setModel(data_to_display_directFlow)
-        self.DirectViewDepFlow.plot()
-
         
 
 
