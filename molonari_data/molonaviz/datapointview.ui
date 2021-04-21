@@ -105,7 +105,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>5</number>
      </property>
      <property name="tabBarAutoHide">
       <bool>false</bool>
@@ -264,7 +264,7 @@
             <height>304</height>
            </rect>
           </property>
-          <layout class="QVBoxLayout" name="layoutMeasuresTemp_3"/>
+          <layout class="QVBoxLayout" name="layoutDirect"/>
          </widget>
         </widget>
        </item>
@@ -289,7 +289,7 @@
             <height>304</height>
            </rect>
           </property>
-          <layout class="QVBoxLayout" name="layoutMeasuresTemp_6"/>
+          <layout class="QVBoxLayout" name="layoutInversion"/>
          </widget>
         </widget>
        </item>
