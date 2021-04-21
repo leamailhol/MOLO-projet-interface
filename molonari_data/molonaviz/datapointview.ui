@@ -6,9 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-
-    <width>660</width>
-    <height>340</height>
+    <width>849</width>
+    <height>536</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -70,12 +69,10 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-
-      <number>4</number>
+      <number>5</number>
      </property>
      <property name="tabBarAutoHide">
       <bool>false</bool>
-
      </property>
      <widget class="QWidget" name="tabInfo">
       <attribute name="title">
@@ -126,10 +123,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-
-            <width>757</width>
-            <height>537</height>
-
+            <width>776</width>
+            <height>547</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -201,9 +196,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-
-            <width>616</width>
-            <height>245</height>
+            <width>797</width>
+            <height>424</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="layoutMeasuresTemp"/>
@@ -266,7 +260,7 @@
           <height>245</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="layoutMeasuresTemp_6"/>
+        <layout class="QVBoxLayout" name="layoutMeasuresInversion"/>
        </widget>
       </widget>
      </widget>
