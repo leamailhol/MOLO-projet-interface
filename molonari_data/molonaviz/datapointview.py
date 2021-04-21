@@ -105,33 +105,19 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg)
             self.axes.invert_yaxis()
             self.draw()
         
-        if self.variable =='MatrixFlow':
-
-            self.axes.title.set_text(self.title)
-            self.axes.set_xlabel('Depth')
-            self.axes.set_ylabel(self.ylab)
-            data = np.array(self.model.getData())
-            matrix = np.delete(data,0,1)
-            im = self.axes.imshow(matrix, aspect='auto')
-            self.fig.colorbar(im)
-            self.draw()
         
-        if self.variable == 'DepthDirectFlow':
-
+        if self.variable == 'DirectFlow':
+            
+            
             self.axes.title.set_text(self.title)
-            self.axes.set_xlabel('Flow')
+            self.axes.set_xlabel('Time')
             self.axes.set_ylabel(self.ylab)
             data = self.model.getData()
-            row1 = np.array(data.columns )
-            data = np.vstack((row1,np.array(data)))
-            data = np.delete(data,0,1)
-            self.axes.plot(data[1,:], data[0,:], label = 'Time 1')
-            self.axes.plot(data[2,:], data[0,:], label = 'Time 2')
-            self.axes.plot(data[3,:], data[0,:], label = 'Time 3')
-            self.axes.plot(data[4,:], data[0,:], label = 'Time 4')
-            self.axes.legend()
-            self.axes.set_yticks(np.arange(0,99, 10))
-            self.axes.invert_yaxis()
+            data_tab = np.array(data)
+            print(data_tab)
+            print(data_tab[:][1])
+            print()
+            self.axes.plot(data['0'] ,data['1'])
             self.draw()
 
         if self.variable == 'HistK' :
@@ -351,12 +337,8 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         data_to_display_directFlow = pandasModel(self.dataDirectFlow)
         #self.tableViewPressure.setModel(data_to_display_directFlow)
 
-        self.DirectViewMatFlow = TimeSeriesPlotCanvas("Flows Matrix", "Time", 'MatrixFlow')
-        self.layoutDirect.addWidget(self.DirectViewMatFlow)
-        self.DirectViewMatFlow.setModel(data_to_display_directFlow)
-        self.DirectViewMatFlow.plot()
 
-        self.DirectViewDepFlow = TimeSeriesPlotCanvas("Flow profile", "Depth", 'DepthDirectFlow')
+        self.DirectViewDepFlow = TimeSeriesPlotCanvas("Flow evolution", "Flow", 'DirectFlow')
         self.layoutDirect.addWidget(self.DirectViewDepFlow)
         self.DirectViewDepFlow.setModel(data_to_display_directFlow)
         self.DirectViewDepFlow.plot()
