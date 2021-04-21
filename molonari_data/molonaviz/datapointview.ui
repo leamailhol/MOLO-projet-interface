@@ -6,58 +6,94 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>849</width>
-    <height>536</height>
+    <width>770</width>
+    <height>399</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="0">
-      <widget class="QCheckBox" name="checkBox">
+  <layout class="QGridLayout" name="gridLayout_6">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0">
+     <item>
+      <widget class="QComboBox" name="comboBox_TempUnit">
+       <item>
+        <property name="text">
+         <string>K</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>°C</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_Raw">
        <property name="text">
         <string>Show Raw Data</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
+     <item>
       <widget class="QPushButton" name="pushButtonReset">
        <property name="text">
         <string>Reset</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
+     <item>
       <widget class="QLabel" name="labelSensor">
        <property name="text">
-        <string>Point</string>
+        <string>Presure Sensor :</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="3">
-      <widget class="QComboBox" name="comboBoxSensor"/>
+     <item>
+      <widget class="QLineEdit" name="lineEdit_Pressure">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
-     <item row="0" column="4">
+     <item>
+      <widget class="QLabel" name="labelSensor_2">
+       <property name="text">
+        <string>Shaft :</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEdit_Shaft">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Last Date: </string>
        </property>
       </widget>
      </item>
-     <item row="0" column="5">
-      <widget class="QComboBox" name="comboBoxDate"/>
+     <item>
+      <widget class="QLineEdit" name="lineEdit_Date">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
-     <item row="0" column="6">
+     <item>
       <widget class="QPushButton" name="pushButtonCleanup">
        <property name="text">
         <string>Cleanup...</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="7">
+     <item>
       <widget class="QPushButton" name="pushButtonCompute">
        <property name="text">
         <string>Compute...</string>
@@ -66,10 +102,10 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>5</number>
+      <number>2</number>
      </property>
      <property name="tabBarAutoHide">
       <bool>false</bool>
@@ -123,8 +159,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>776</width>
-            <height>547</height>
+            <width>763</width>
+            <height>543</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -157,6 +193,9 @@
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
         <widget class="QTableView" name="tableViewTemperature">
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>false</bool>
+         </attribute>
          <attribute name="verticalHeaderStretchLastSection">
           <bool>true</bool>
          </attribute>
@@ -196,8 +235,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>797</width>
-            <height>424</height>
+            <width>726</width>
+            <height>304</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="layoutMeasuresTemp"/>
@@ -210,59 +249,51 @@
       <attribute name="title">
        <string>Direct Model</string>
       </attribute>
-      <widget class="QScrollArea" name="scrollArea_5">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>10</y>
-         <width>618</width>
-         <height>247</height>
-        </rect>
-       </property>
-       <property name="widgetResizable">
-        <bool>true</bool>
-       </property>
-       <widget class="QWidget" name="widgetModelDirect">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>616</width>
-          <height>245</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="layoutMeasuresTemp_3"/>
-       </widget>
-      </widget>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QScrollArea" name="scrollArea_5">
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="widgetModelDirect">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>726</width>
+            <height>304</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="layoutMeasuresTemp_3"/>
+         </widget>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tabInversion">
       <attribute name="title">
        <string>Bayesian Inversion</string>
       </attribute>
-      <widget class="QScrollArea" name="scrollArea_9">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>618</width>
-         <height>247</height>
-        </rect>
-       </property>
-       <property name="widgetResizable">
-        <bool>true</bool>
-       </property>
-       <widget class="QWidget" name="widgetInversion">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>616</width>
-          <height>245</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="layoutMeasuresInversion"/>
-       </widget>
-      </widget>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <widget class="QScrollArea" name="scrollArea_9">
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="widgetInversion">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>726</width>
+            <height>304</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="layoutMeasuresTemp_6"/>
+         </widget>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
