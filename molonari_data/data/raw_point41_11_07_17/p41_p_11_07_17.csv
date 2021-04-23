@@ -1,5 +1,5 @@
-﻿"Titre de tracé : p41_p"
-"#","Date Heure, GMT+01:00","Tension, V (LGR S/N: 20072572, SEN S/N: 20072572, LBL: Pression)","Temp., °C (LGR S/N: 20072572, SEN S/N: 20072572, LBL: Temperature)","Hôte connecté (LGR S/N: 20072572)","Arrêté (LGR S/N: 20072572)","Fin de fichier (LGR S/N: 20072572)"
+﻿Titre de tracé : p41_p
+"id,""Date Heure"",""Tension V "",""Temp.°C"",""Hôte connecté (LGR S: 20072572)"",""Arrêté (LGR S: 20072572)"",""Fin de fichier (LGR S/20072572)"""
 1,05/18/17 12:00:00,2.49996,19.961,,,
 2,05/18/17 12:15:00,1.52277,14.931,,,
 3,05/18/17 12:30:00,1.98550,14.921,,,

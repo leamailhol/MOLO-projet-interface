@@ -63,12 +63,23 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
         if dirPath:
             self.lineEdit_Notice.setText(dirPath[0])
 
+    def replace_date_fabien(self, str) :
+        str = str.replace('PM','')
+        str = str.replace('AM','')
+        mois,jour,an_etc = str.split('/')
+        an = an_etc[:2]
+        rest = an_etc[2:]
+        str = '20' + an +'/'+mois+'/'+jour+rest
+        return str[:-1]
+
     def saveProcessedTemp(self):
-        col_temp = ['Index','Date','T sensor 1','T sensor 2', 'T sensor 3', 'T sensor 4']
-        dftemp = pd.read_csv(self.lineEdit_RawTemperature.text(), encoding='utf-8', sep=',', low_memory=False, skiprows=1)
+        col_temp = ['Index','Date','T sensor 1','T sensor 2', 'T sensor 3', 'T sensor 4','A','B','C','D','E']
+        dftemp = pd.read_csv(self.lineEdit_RawTemperature.text(), skiprows=1)
         dftemp.columns = col_temp
+        dftemp = dftemp.drop(axis = 1, columns = ['A','B','C','D','E'])
         dftemp.index.name='Index'
-        dftemp['Date'] = '20'+dftemp['Date']
+        rep = np.vectorize(self.replace_date_fabien)
+        dftemp['Date'] = rep(dftemp['Date'])
         vect_change_date = np.vectorize(self.change_date)
         dftemp['Date'] = vect_change_date(dftemp['Date'])
         dftemp = dftemp.astype({'T sensor 1': np.float,'T sensor 2': np.float,'T sensor 3': np.float,'T sensor 4': np.float})
@@ -78,15 +89,18 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
         dftemp.to_csv(path, index = False)
 
     def saveProcessedPres(self):
-        col_press = ['Date','Tension','Temperature']
-        dfpres = pd.read_csv(self.lineEdit_RawPressure.text(), encoding='utf-8', sep=';', low_memory=False, skiprows=0)
+        col_press = ['Index','Date','Tension','Temperature','A','B','C']
+        dfpres = pd.read_csv(self.lineEdit_RawPressure.text(), skiprows=1)
         dfpres.columns = col_press 
+        dfpres = dfpres.drop(axis = 1, columns = ['A','B','C'])
         dfpres.index.name='Index'
         dfpres = dfpres.dropna()
+        rep = np.vectorize(self.replace_date_fabien)
+        dfpres['Date'] = rep(dfpres['Date'])
         vect_change_date = np.vectorize(self.change_date)
         dfpres['Date'] = vect_change_date(dfpres['Date'])
         dfpres = dfpres.astype({'Temperature': np.float,'Tension': np.float})
-        dfpres['Temperature'] = dfpres['Temperature'] #+float(273.5)
+        dfpres['Temperature'] = dfpres['Temperature'] + float(273.5)
         pres_sensor_name = self.lineEdit_Sensor.text()
         item_pres = self.sensorModel.item(0)
         pres_sensor = None
