@@ -117,38 +117,30 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg)
             print(data_tab)
             print(data_tab[:][1])
             print()
-            self.axes.plot(data['0'] ,data['1'])
+            self.axes.plot(data['0']) #,data['1'])
             self.draw()
 
         if self.variable == 'HistK' :
             self.axes.title.set_text(self.title)
             data = self.model.getData()
-            print(data)
-            print(data['0'])
             self.axes.hist(data['0'], bins=7, edgecolor = 'white')
             self.draw()
 
         if self.variable == 'HistLambda' :
             self.axes.title.set_text(self.title)
             data = self.model.getData()
-            print(data)
-            print(data['0'])
             self.axes.hist(data['0'], bins=7, edgecolor = 'white')
             self.draw()
         
         if self.variable == 'Histn' :
             self.axes.title.set_text(self.title)
             data = self.model.getData()
-            print(data)
-            print(data['0'])
             self.axes.hist(data['0'], bins=7, edgecolor = 'white')
             self.draw()
         
         if self.variable == 'Histrho' :
             self.axes.title.set_text(self.title)
             data = self.model.getData()
-            print(data)
-            print(data['0'])
             self.axes.hist(data['0'], bins=7, edgecolor = 'white')
             self.draw()
 
