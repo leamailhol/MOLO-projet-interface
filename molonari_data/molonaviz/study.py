@@ -6,7 +6,7 @@ from sensor import sensorType
 
 import numpy as np
 import os
-from PyQt5 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore,QtWidgets
 
 class Study(object):
     '''
@@ -18,7 +18,7 @@ class Study(object):
         self.rootDir = rootDir
         self.sensorDir = sensorDir
     
-    def loadSensors(self, sensorModel):
+    def loadSensors(self, sensorModel): 
         # Reset the model (remove all sensors) !
         sensorModel.clear()
         # Reload all sensors from sensorDir
@@ -94,7 +94,7 @@ class Study(object):
 
             item.appendRow(QtGui.QStandardItem(f"t_sensor_name : {sensor.t_sensor_name}"))
             item.appendRow(QtGui.QStandardItem(f"sensors_depth : {sensor.sensors_depth}"))
-
+        
 
     def loadSensorType(self, fileName):
         sensortype = sensorType(fileName)
@@ -108,7 +108,7 @@ class Study(object):
         dirs = os.listdir(sdir)
 
         press = dirs[0]
-         
+        
         pathCalib = os.path.join(self.sensorDir, press, sensorName)
         file = open(pathCalib,"r")
         lines = file.readlines()
@@ -187,10 +187,13 @@ class Study(object):
 
     def saveStudy(self):
         os.chdir(self.rootDir)
-        f = open(f"{self.name}.txt","w+")
-        f.write(f"{self.name}\n{self.rootDir}\n{self.sensorDir}")
+        if len(os.listdir(self.rootDir) ) == 0 :
+            f = open(f"{self.name}.txt","w+")
+            f.write(f"{self.name}\n{self.rootDir}\n{self.sensorDir}")
 
-        f.close()
+            f.close()
+        else : 
+            raise TypeError("The directory must be empty")
     
 
     

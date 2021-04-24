@@ -1,3 +1,0 @@
-study_test
-D:/Documents/Cours/2A/Molonari/Interface/MOLO-projet-interface/molonari_data/studies
-D:/Documents/Cours/2A/Molonari/Interface/MOLO-projet-interface/molonari_data/sensors
