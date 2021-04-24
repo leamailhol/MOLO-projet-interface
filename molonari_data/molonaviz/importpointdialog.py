@@ -106,7 +106,7 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
         dftemp.index.name='Index'
         rep = np.vectorize(self.replace_date_temp_fabien)
         dftemp['Date'] = rep(dftemp['Date'])
-        dftemp = dftemp.iloc[:-1] #specifique fichier fabien 
+        dftemp = dftemp.iloc[:2237] #specifique fichier fabien 
         dftemp = dftemp.astype({'T sensor 1': np.float,'T sensor 2': np.float,'T sensor 3': np.float,'T sensor 4': np.float})
         for i in range(1,5) :
             dftemp[f'T sensor {i}']=dftemp[f'T sensor {i}'] + float(273.5)
@@ -123,7 +123,7 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
         dfpres = dfpres.dropna()
         rep = np.vectorize(self.replace_date_pres_fabien)
         dfpres['Date'] = rep(dfpres['Date'])
-        dfpres = dfpres.iloc[1:3299]
+        dfpres = dfpres.iloc[1:2238]
         dfpres = dfpres.astype({'Temperature': np.float,'Tension': np.float})
         dfpres['Temperature'] = dfpres['Temperature'] + float(273.5)
         pres_sensor_name = self.lineEdit_Sensor.text()

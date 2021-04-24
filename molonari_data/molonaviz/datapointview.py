@@ -436,7 +436,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
             self.dataPressure = self.dataPressure.dropna()
             rep = np.vectorize(self.replace_date_pres_fabien)
             self.dataPressure['Date'] = rep(self.dataPressure['Date'])
-            self.dataPressure = self.dataPressure.iloc[1:3299]
+            self.dataPressure = self.dataPressure.iloc[1:2238]
             self.dataPressure = self.dataPressure.astype({'Temperature': np.float})
             if self.unit == 'K' :
                 self.dataPressure['Temperature'] = self.dataPressure['Temperature']+ float(273.5)
@@ -461,7 +461,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
             self.dataTemperature = self.dataTemperature.astype({'T sensor 1': np.float,'T sensor 2': np.float,'T sensor 3': np.float,'T sensor 4': np.float})
             rep = np.vectorize(self.replace_date_temp_fabien)
             self.dataTemperature['Date'] = rep(self.dataTemperature['Date'])
-            self.dataTemperature = self.dataTemperature.iloc[:-1]
+            self.dataTemperature = self.dataTemperature.iloc[:2237]
             if self.unit == 'K' :
                 for i in range(1,5) :
                     self.dataTemperature[f'T sensor {i}'] = self.dataTemperature[f'T sensor {i}'] + float(273.5)
