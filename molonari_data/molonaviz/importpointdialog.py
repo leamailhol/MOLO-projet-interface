@@ -75,7 +75,6 @@ class ImportPointDialog(QtWidgets.QDialog,From_ImportPointDialog):
             mois,jour,an_etc = str.split('/')
             an = an_etc[:2]
             rest = an_etc[2:]
-            print(rest)
             if rest[1:3] !='12':
                 if rest[1] == '0' :
                     rest = rest.replace(rest[1:3],f'{int(rest[2])+12}')

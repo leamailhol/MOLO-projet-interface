@@ -8,6 +8,7 @@ import numpy as np
 from pyheatmy import *
 from datetime import datetime
 from pathlib import Path
+from importpointdialog import ImportPointDialog
 
 import sys
 import matplotlib.pyplot as plt
@@ -402,7 +403,6 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
             mois,jour,an_etc = str.split('/')
             an = an_etc[:2]
             rest = an_etc[2:]
-            print(rest)
             if rest[1:3] !='12':
                 if rest[1] == '0' :
                     rest = rest.replace(rest[1:3],f'{int(rest[2])+12}')
@@ -480,6 +480,72 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
 
     def reset(self):
         print('reset')
+        self.saveProcessedPres()
+        self.saveProcessedTemp()
+
+        self.dataTemperature = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        data_to_display_temp = pandasModel(self.dataTemperature)
+        self.tableViewTemperature.setModel(data_to_display_temp)
+        
+        
+        self.dataPressure = pd.read_csv('processed_pressure.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        data_to_display_press = pandasModel(self.dataPressure)
+        self.tableViewPressure.setModel(data_to_display_press)
+
+
+        self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
+        self.plotViewTemp.setModel(data_to_display_temp)
+        self.plotViewTemp.plot()
+
+        self.layoutMeasuresTemp.addWidget(self.plotViewPress)
+        self.plotViewPress.setModel(data_to_display_press)
+        self.plotViewPress.plot()
+
+    def saveProcessedTemp(self):
+        col_temp = ['Index','Date','T sensor 1','T sensor 2', 'T sensor 3', 'T sensor 4','A','B','C','D','E']
+        dftemp = pd.read_csv(os.path.join(self.path_point, 'imp_raw_temperature.csv'), skiprows=1)
+        dftemp.columns = col_temp
+        dftemp = dftemp.drop(axis = 1, columns = ['Index','A','B','C','D','E'])
+        dftemp.index.name='Index'
+        rep = np.vectorize(self.replace_date_temp_fabien)
+        dftemp['Date'] = rep(dftemp['Date'])
+        dftemp = dftemp.iloc[:2237] #specifique fichier fabien 
+        dftemp = dftemp.astype({'T sensor 1': np.float,'T sensor 2': np.float,'T sensor 3': np.float,'T sensor 4': np.float})
+        for i in range(1,5) :
+            dftemp[f'T sensor {i}']=dftemp[f'T sensor {i}'] + float(273.5)
+            dftemp[f'T sensor {i}'] = dftemp[f'T sensor {i}'].round(2)
+        path = os.path.join(self.path_point, 'processed_temperature.csv')
+        dftemp.to_csv(path, index = False)
+
+    def saveProcessedPres(self):
+        col_press = ['Index','Date','Tension','Temperature','A','B','C']
+        dfpres = pd.read_csv(os.path.join(self.path_point, 'imp_raw_pressure.csv'), skiprows=1)
+        dfpres.columns = col_press 
+        dfpres = dfpres.drop(axis = 1, columns = ['Index','A','B','C'])
+        dfpres.index.name='Index'
+        dfpres = dfpres.dropna()
+        rep = np.vectorize(self.replace_date_pres_fabien)
+        dfpres['Date'] = rep(dfpres['Date'])
+        dfpres = dfpres.iloc[1:2238]
+        dfpres = dfpres.astype({'Temperature': np.float,'Tension': np.float})
+        dfpres['Temperature'] = dfpres['Temperature'] + float(273.5)
+        pres_sensor_name = self.point.pressure_sensor
+        item_pres = self.sensorModel.item(0)
+        pres_sensor = None
+        for row in range(item_pres.rowCount()):
+            if item_pres.child(row).text() == pres_sensor_name :
+                pres_sensor = item_pres.child(row).data(QtCore.Qt.UserRole)
+        dfpres['Pressure'] = (dfpres['Tension']-pres_sensor.intercept-pres_sensor.dudt*dfpres['Temperature'])/pres_sensor.dudh
+        dfpres['Pressure'] = dfpres['Pressure'].round(2)
+        dfpres['Temperature'] = dfpres['Temperature'].round(2)
+        dfpres['Tension'] = dfpres['Tension'].round(2)
+        path = os.path.join(self.path_point,'processed_pressure.csv')
+        dfpres.to_csv(path)
+    
+    def change_date(self,str) :
+        a = str.split('-')
+        return '/'.join(a)
+
     
     def cleanup(self):
         clnp = DialogCleanUp() 

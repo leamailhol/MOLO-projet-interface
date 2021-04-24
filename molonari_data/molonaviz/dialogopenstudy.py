@@ -23,17 +23,42 @@ class DialogOpenStudy(QtWidgets.QDialog,From_DialogOpenStudy):
             self.lineEditStudy.setText(dirPath) 
 
     def getStudy(self):
-        path = self.lineEditStudy.text()
-        dirs = os.listdir(path)
-        for mydir in dirs:
-            _, ext = os.path.splitext(mydir)
-            if ext == '.txt':
-                f = open(path + f'/{mydir}',"r")
-                lines = f.readlines()
-                name = lines[0].rstrip('\n')
-                rootDir = lines[1].rstrip('\n')
-                sensorDir = lines[2].rstrip('\n')
-                return Study(name, rootDir, sensorDir)
+        try : 
+            path = self.lineEditStudy.text()
+            dirs = os.listdir(path)
+            for mydir in dirs:
+                _, ext = os.path.splitext(mydir)
+                if ext == '.txt':
+                    f = open(path + f'/{mydir}',"r")
+                    lines = f.readlines()
+                    name = lines[0].rstrip('\n')
+                    rootDir = lines[1].rstrip('\n')
+                    sensorDir = lines[2].rstrip('\n')
+                    return Study(name, rootDir, sensorDir)
+        except TypeError as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowTitle("Error")
+            msg.setText(f"Error detected : {e}")
+            msg.setIcon(QtWidgets.QMessageBox.Warning)
+            msg.exec()
+        except AttributeError as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowTitle("Error")
+            msg.setText(f"Error detected : {e}, path invalid")
+            msg.setIcon(QtWidgets.QMessageBox.Warning)
+            msg.exec()
+        except PermissionError as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowTitle("Error")
+            msg.setText(f"Error detected : {e}, path invalid on your computer")
+            msg.setIcon(QtWidgets.QMessageBox.Warning)
+            msg.exec()
+        except FileNotFoundError as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowTitle("Error")
+            msg.setText(f"Error detected : {e}, folder invalid")
+            msg.setIcon(QtWidgets.QMessageBox.Warning)
+            msg.exec()
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
