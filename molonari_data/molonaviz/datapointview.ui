@@ -14,10 +14,98 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0">
+     <item>
+      <widget class="QComboBox" name="comboBox_TempUnit">
+       <item>
+        <property name="text">
+         <string>K</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>°C</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_Raw">
+       <property name="text">
+        <string>Show Raw Data</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonReset">
+       <property name="text">
+        <string>Reset</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelSensor">
+       <property name="text">
+        <string>Presure Sensor :</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEdit_Pressure">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelSensor_2">
+       <property name="text">
+        <string>Shaft :</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEdit_Shaft">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Last Date: </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEdit_Date">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonCleanup">
+       <property name="text">
+        <string>Cleanup...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonCompute">
+       <property name="text">
+        <string>Compute...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>5</number>
+      <number>7</number>
      </property>
      <property name="tabBarAutoHide">
       <bool>false</bool>
@@ -159,7 +247,7 @@
      </widget>
      <widget class="QWidget" name="tabModelDirect">
       <attribute name="title">
-       <string>Direct Model</string>
+       <string>Direct Model Temp</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
@@ -176,7 +264,32 @@
             <height>304</height>
            </rect>
           </property>
-          <layout class="QVBoxLayout" name="layoutDirect"/>
+          <layout class="QGridLayout" name="gridLayoutTemp"/>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabDirFlux">
+      <attribute name="title">
+       <string>Direct Model Flux</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_10">
+       <item row="0" column="0">
+        <widget class="QScrollArea" name="scrollArea_6">
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="widgetModelDirectFlux">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>726</width>
+            <height>304</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="gridLayoutFlux"/>
          </widget>
         </widget>
        </item>
@@ -184,7 +297,7 @@
      </widget>
      <widget class="QWidget" name="tabInversion">
       <attribute name="title">
-       <string>Bayesian Inversion</string>
+       <string>Bayesian Inversion Hist</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0">
@@ -201,101 +314,38 @@
             <height>304</height>
            </rect>
           </property>
-          <layout class="QVBoxLayout" name="layoutInversion"/>
+          <layout class="QGridLayout" name="gridLayoutInv"/>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabTempMCMC">
+      <attribute name="title">
+       <string>Temperature MCMC</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_12">
+       <item row="0" column="0">
+        <widget class="QScrollArea" name="scrollArea_7">
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="widgetTempMCMC">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>726</width>
+            <height>304</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="gridLayoutTempMCMC"/>
          </widget>
         </widget>
        </item>
       </layout>
      </widget>
     </widget>
-   </item>
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0">
-     <item>
-      <widget class="QComboBox" name="comboBox_TempUnit">
-       <item>
-        <property name="text">
-         <string>K</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>°C</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="checkBox_Raw">
-       <property name="text">
-        <string>Show Raw Data</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonReset">
-       <property name="text">
-        <string>Reset</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="labelSensor">
-       <property name="text">
-        <string>Presure Sensor :</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEdit_Pressure">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="labelSensor_2">
-       <property name="text">
-        <string>Shaft :</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEdit_Shaft">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Last Date: </string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEdit_Date">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonCleanup">
-       <property name="text">
-        <string>Cleanup...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonCompute">
-       <property name="text">
-        <string>Compute...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>
