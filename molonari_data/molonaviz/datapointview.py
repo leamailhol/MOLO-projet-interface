@@ -377,12 +377,12 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         data_to_display_invTemp = pandasModel(self.dataInvTemp)
 
         self.InvViewMat = TimeSeriesPlotCanvas("Temperature's Matrix", "Time", 'MatrixTempInv')
-        self.layoutInv.addWidget(self.InvViewMat)
+        self.gridLayoutInv.addWidget(self.InvViewMat,0,0,1,1)
         self.InvViewMat.setModel(data_to_display_invTemp)
         self.InvViewMat.plot()
 
         self.InvViewDep = TimeSeriesPlotCanvas("Temperature profile", "Depth", 'DepthDirectTempInv')
-        self.layoutInv.addWidget(self.InvViewDep)
+        self.gridLayoutInv.addWidget(self.InvViewDep,0,1,1,1)
         self.InvViewDep.setModel(data_to_display_invTemp)
         self.InvViewDep.plot()
 
@@ -390,7 +390,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         data_to_display_moinslog10K = pandasModel(self.dataMoinslogK)
 
         self.MCMCViewHistK = TimeSeriesPlotCanvas("- log K", None , 'HistK')
-        self.layoutInversion.addWidget(self.MCMCViewHistK)
+        self.gridLayoutInv.addWidget(self.MCMCViewHistK,1,0,1,1)
         self.MCMCViewHistK.setModel(data_to_display_moinslog10K)
         self.MCMCViewHistK.plot()
 
@@ -398,7 +398,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         data_to_display_lambda = pandasModel(self.datalambda)
 
         self.MCMCViewHistlambda = TimeSeriesPlotCanvas("lambda s", None , 'Histlambda')
-        self.layoutInversion.addWidget(self.MCMCViewHistlambda)
+        self.gridLayoutInv.addWidget(self.MCMCViewHistlambda,1,1,1,1)
         self.MCMCViewHistlambda.setModel(data_to_display_lambda)
         self.MCMCViewHistlambda.plot()
 
@@ -406,7 +406,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         data_to_display_n = pandasModel(self.datan)
 
         self.MCMCViewHistn = TimeSeriesPlotCanvas("n", None , 'Histn')
-        self.layoutInversion.addWidget(self.MCMCViewHistn)
+        self.gridLayoutInv.addWidget(self.MCMCViewHistn,2,0,1,1)
         self.MCMCViewHistn.setModel(data_to_display_n)
         self.MCMCViewHistn.plot()
 
@@ -414,7 +414,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         data_to_display_rho = pandasModel(self.datarho)
 
         self.MCMCViewHistrho = TimeSeriesPlotCanvas("rho * cs", None , 'Histrho')
-        self.layoutInversion.addWidget(self.MCMCViewHistrho)
+        self.gridLayoutInv.addWidget(self.MCMCViewHistrho,2,1,1,1)
         self.MCMCViewHistrho.setModel(data_to_display_rho)
         self.MCMCViewHistrho.plot()
 
