@@ -1,0 +1,11 @@
+Le code marche uniquement avec les fichiers test du point 41 donnés par Fabien pour le moment. Le plus simple est de choisir dans Measures les fichiers de pt2pourtest (ce dossier contient les 5 fichiers à utiliser)
+
+Il faut parfois attendre que la page se recharge doucement quand on fait une action à un endroit dans la datapointview ou quand on fait le compute 
+
+Avant le compute il faut importer la librairie de Mathis. Faire le compute sans passer par le cleanup avant (il marche pas en fait, on a pas eu le temp de changer)
+
+Pour compute Inversion, ajouter uniquement le quartile à 0.5. 
+
+Si le compute ne marche pas, copier les donner d'un fichier point dans une de nos study dans votre study pour regarder le résultat.
+Les plot n'ont vraiment pas beaucoup de sens, cela vient surement des fichiers de départs...
+On a pas eu le temps de changer les axes des plots 

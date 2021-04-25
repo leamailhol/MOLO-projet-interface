@@ -19,18 +19,17 @@ class DialogCleanUp(QtWidgets.QDialog,From_DialogCleanUp):
 
 
     def saveCleanedUpData(self, code):
-        dft = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        dft = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0,index_col=[0])
         dfp = pd.read_csv('processed_pressure.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
 
-        
-        f = open("test.py","w+")
-        
-        print (code)
+        print(type(code))
+        f = open("code.py","w+")
         f.write(code)
         f.close()
 
-        exec(open("test.py").read())
+        dft,dfp = eval(open("code.py").read())
 
+        print(dft)
         dft.to_csv('processed_temperature.csv', sep = ',')
         dfp.to_csv('processed_pressure.csv', sep = ',')
 
@@ -38,9 +37,5 @@ class DialogCleanUp(QtWidgets.QDialog,From_DialogCleanUp):
 
         return self.textEdit.toPlainText()
 
-        
-if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-    mainWin = DialogCleanUp()
-    mainWin.show()
-    sys.exit(app.exec_())
+
+    

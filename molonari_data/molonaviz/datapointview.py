@@ -83,8 +83,8 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg)
             self.axes.set_xlabel('Depth')
             self.axes.set_ylabel(self.ylab)
             data = np.array(self.model.getData())
-            matrix = np.delete(data,0,1)
-            im = self.axes.imshow(matrix, aspect='auto')
+            #matrix = np.delete(data,0,1)
+            im = self.axes.imshow(data, aspect='auto')
             self.fig.colorbar(im)
             self.draw()
 
@@ -96,9 +96,9 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg)
             data = self.model.getData()
             row1 = np.array(data.columns )
             data = np.vstack((row1,np.array(data)))
-            data = np.delete(data,0,1)
+            data = data[2:]
             l = len(data[:,0])
-            for i in range(0,l,l//10) :
+            for i in range(0,l,l//10) : #après il y a un bug jsp pq
                 self.axes.plot(data[i,:], data[0,:], label = f'Time {i}')
             self.axes.legend()
             self.axes.set_yticks(np.arange(0,99, 10))
@@ -108,16 +108,13 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg)
         
         if self.variable == 'DirectFlow':
             
-            
             self.axes.title.set_text(self.title)
-            self.axes.set_xlabel('Time')
+            self.axes.set_xlabel('Time Index')
             self.axes.set_ylabel(self.ylab)
             data = self.model.getData()
             data_tab = np.array(data)
-            print(data_tab)
-            print(data_tab[:][1])
-            print()
-            self.axes.plot(data['0']) #,data['1'])
+            print("flux",data_tab)
+            self.axes.plot(data_tab[:,0],data_tab[:,1])
             self.draw()
 
         if self.variable == 'HistK' :
@@ -126,9 +123,10 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg)
             self.axes.hist(data['0'], bins=7, edgecolor = 'white')
             self.draw()
 
-        if self.variable == 'HistLambda' :
+        if self.variable == 'Histlambda' :
             self.axes.title.set_text(self.title)
             data = self.model.getData()
+            print('lambda',data)
             self.axes.hist(data['0'], bins=7, edgecolor = 'white')
             self.draw()
         
@@ -144,19 +142,41 @@ class TimeSeriesPlotCanvas(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg)
             self.axes.hist(data['0'], bins=7, edgecolor = 'white')
             self.draw()
 
+        if self.variable =='MatrixTempMCMC':
 
+            self.axes.title.set_text(self.title)
+            self.axes.set_xlabel('Depth')
+            self.axes.set_ylabel(self.ylab)
+            data = np.array(self.model.getData())
+            print("matrix t", data)
+            data = data[2:12] #ça marche que sur le premiere lignes #2 premiere ligne c'est nul
+            #matrix = np.delete(data,0,1)
+            im = self.axes.imshow(data, aspect='auto')
+            self.fig.colorbar(im)
+            self.draw()
+
+        if self.variable == 'DepthDirectTempMCMC':
+
+            self.axes.title.set_text(self.title)
+            self.axes.set_xlabel('Temperature')
+            self.axes.set_ylabel(self.ylab)
+            data = self.model.getData()
+            row1 = np.array(data.columns )
+            data = np.vstack((row1,np.array(data)))
+            data = np.delete(data,0,1)
+            l = 12
+            for i in range(12) :
+                self.axes.plot(data[i,:], data[0,:], label = f'Time {i}')
+            self.axes.legend()
+            #self.axes.set_yticks(np.arange(0,99, 10))
+            self.axes.invert_yaxis()
+            self.draw()
 
 
 
 
         
-           
-
-
-
-
-
-
+        
 
 class pandasModel(QtCore.QAbstractTableModel):
 
@@ -317,66 +337,81 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.plotViewPress.setModel(data_to_display_press)
         self.plotViewPress.plot()
 
-        print(Path(os.path.join(self.path_point,'res_temps.csv')).is_dir())
         if os.path.exists(os.path.join(self.path_point,'res_temps.csv')):
             print("coucou")
-            self.dataDirectTemp = pd.read_csv('res_temps.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+            self.dataDirectTemp = pd.read_csv('res_temps.csv', sep=',', low_memory=False, skiprows=0)
             data_to_display_directTemp = pandasModel(self.dataDirectTemp)
 
             self.DirectViewMat = TimeSeriesPlotCanvas("Temperature's Matrix", "Time", 'MatrixTemp')
-            self.layoutDirect.addWidget(self.DirectViewMat)
+            self.gridLayoutTemp.addWidget(self.DirectViewMat,0,0,1,1)
             self.DirectViewMat.setModel(data_to_display_directTemp)
             self.DirectViewMat.plot()
 
             self.DirectViewDep = TimeSeriesPlotCanvas("Temperature profile", "Depth", 'DepthDirectTemp')
-            self.layoutDirect.addWidget(self.DirectViewDep)
+            self.gridLayoutTemp.addWidget(self.DirectViewDep,0,1,1,1)
             self.DirectViewDep.setModel(data_to_display_directTemp)
             self.DirectViewDep.plot()
 
         if os.path.exists(os.path.join(self.path_point,'res_flows.csv')) :
-            self.dataDirectFlow = pd.read_csv('res_flows.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+            self.dataDirectFlow = pd.read_csv('res_flows.csv', sep=',', low_memory=False, skiprows=0)
             data_to_display_directFlow = pandasModel(self.dataDirectFlow)
             #self.tableViewPressure.setModel(data_to_display_directFlow)
 
 
             self.DirectViewDepFlow = TimeSeriesPlotCanvas("Flow evolution", "Flow", 'DirectFlow')
-            self.layoutDirect.addWidget(self.DirectViewDepFlow)
+            self.gridLayoutFlux.addWidget(self.DirectViewDepFlow)
             self.DirectViewDepFlow.setModel(data_to_display_directFlow)
             self.DirectViewDepFlow.plot()
 
         if os.path.exists(os.path.join(self.path_point,'res_all_moinslog10K.csv')) :
-            self.dataMoinslogK = pd.read_csv('res_all_moinslog10K.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+
+            self.dataMoinslogK = pd.read_csv('res_all_moinslog10K.csv', sep=',', low_memory=False, skiprows=0)
             data_to_display_moinslog10K = pandasModel(self.dataMoinslogK)
 
             self.MCMCViewHistK = TimeSeriesPlotCanvas("- log K", None , 'HistK')
-            self.layoutInversion.addWidget(self.MCMCViewHistK)
+            self.gridLayoutInv.addWidget(self.MCMCViewHistK,0,0,1,1)
             self.MCMCViewHistK.setModel(data_to_display_moinslog10K)
             self.MCMCViewHistK.plot()
 
-            self.datalambda = pd.read_csv('res_all_lambda_s.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+            self.datalambda = pd.read_csv('res_all_lambda_s.csv',sep=',', low_memory=False, skiprows=0)
             data_to_display_lambda = pandasModel(self.datalambda)
 
             self.MCMCViewHistlambda = TimeSeriesPlotCanvas("lambda s", None , 'Histlambda')
-            self.layoutInversion.addWidget(self.MCMCViewHistlambda)
+            self.gridLayoutInv.addWidget(self.MCMCViewHistlambda,0,1,1,1)
             self.MCMCViewHistlambda.setModel(data_to_display_lambda)
             self.MCMCViewHistlambda.plot()
 
-            self.datan = pd.read_csv('res_all_n.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+            self.datan = pd.read_csv('res_all_n.csv', sep=',', low_memory=False, skiprows=0)
             data_to_display_n = pandasModel(self.datan)
 
             self.MCMCViewHistn = TimeSeriesPlotCanvas("n", None , 'Histn')
-            self.layoutInversion.addWidget(self.MCMCViewHistn)
+            self.gridLayoutInv.addWidget(self.MCMCViewHistn,1,0,1,1)
             self.MCMCViewHistn.setModel(data_to_display_n)
             self.MCMCViewHistn.plot()
 
-            self.datarho = pd.read_csv('res_all_rho_cs.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+            self.datarho = pd.read_csv('res_all_rho_cs.csv',sep=',', low_memory=False, skiprows=0)
             data_to_display_rho = pandasModel(self.datarho)
 
             self.MCMCViewHistrho = TimeSeriesPlotCanvas("rho * cs", None , 'Histrho')
-            self.layoutInversion.addWidget(self.MCMCViewHistrho)
+            self.gridLayoutInv.addWidget(self.MCMCViewHistrho,1,1,1,1)
             self.MCMCViewHistrho.setModel(data_to_display_rho)
             self.MCMCViewHistrho.plot()
 
+        list_quantile = [0.5] #à voir comment obtenir le bon 
+        for quantile in list_quantile :
+            if os.path.exists(os.path.join(self.path_point,f'res_temps_{quantile*100}.csv')):
+                self.dataDirectTemp = pd.read_csv(f'res_temps_{quantile*100}.csv', sep=',', low_memory=False, skiprows=0)
+                data_to_display_directTemp = pandasModel(self.dataDirectTemp)
+
+                self.DirectViewMat = TimeSeriesPlotCanvas(f"Temperature's Matrix Quantile = {quantile}", "Time", 'MatrixTempMCMC')
+                self.gridLayoutTempMCMC.addWidget(self.DirectViewMat,0,0,1,1)
+                self.DirectViewMat.setModel(data_to_display_directTemp)
+                self.DirectViewMat.plot()
+
+                self.DirectViewDep = TimeSeriesPlotCanvas(f"Temperature profile Quantile = {quantile}", "Depth", 'DepthDirectTempMCMC')
+                self.gridLayoutTempMCMC.addWidget(self.DirectViewDep,0,1,1,1)
+                self.DirectViewDep.setModel(data_to_display_directTemp)
+                self.DirectViewDep.plot()
 
     def changeunit(self) :
         self.unit = self.comboBox_TempUnit.currentText()
@@ -483,14 +518,41 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         self.saveProcessedPres()
         self.saveProcessedTemp()
 
-        self.dataTemperature = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        if self.checkBox_Raw.isChecked() :
+            col_temp = ['Index','Date','T sensor 1','T sensor 2', 'T sensor 3', 'T sensor 4']
+            self.dataTemperature = pd.read_csv('imp_raw_temperature.csv', encoding='utf-8', sep=';', low_memory=False, skiprows=1)
+            self.dataTemperature.columns = col_temp
+            self.dataTemperature.index.name='Index'
+            if self.unit == '°C' :
+                for i in range(1,5) :
+                    self.dataTemperature[f'T sensor {i}'] = self.dataTemperature[f'T sensor {i}'] - float(273.5)
+                    self.dataTemperature[f'T sensor {i}'] = self.dataTemperature[f'T sensor {i}'].round(2)
+        else : 
+            self.dataTemperature = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+            if self.unit == '°C' :
+                for i in range(1,5) :
+                    self.dataTemperature[f'T sensor {i}'] = self.dataTemperature[f'T sensor {i}'] - float(273.5)
+                    self.dataTemperature[f'T sensor {i}'] = self.dataTemperature[f'T sensor {i}'].round(2)
+            change_date = np.vectorize(self.string_to_date)
+            self.dataTemperature['Date']= change_date(self.dataTemperature['Date'])
         data_to_display_temp = pandasModel(self.dataTemperature)
         self.tableViewTemperature.setModel(data_to_display_temp)
-        
-        
-        self.dataPressure = pd.read_csv('processed_pressure.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+
+        if self.checkBox_Raw.isChecked() :
+            self.dataPressure = pd.read_csv('imp_raw_pressure.csv', encoding='utf-8', sep=';', low_memory=False, skiprows=0)
+            if self.unit == '°C' :
+                self.dataPressure['Temperature'] = self.dataPressure['Temperature']- float(273.5)
+                self.dataPressure['Temperature'] = self.dataPressure['Temperature'].round(2)
+        else :
+            self.dataPressure = pd.read_csv('processed_pressure.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+            if self.unit == '°C' :
+                self.dataPressure['Temperature'] = self.dataPressure['Temperature']- float(273.5)
+                self.dataPressure['Temperature'] = self.dataPressure['Temperature'].round(2)
+            change_date = np.vectorize(self.string_to_date)
+            self.dataPressure['Date']= change_date(self.dataPressure['Date'])
         data_to_display_press = pandasModel(self.dataPressure)
         self.tableViewPressure.setModel(data_to_display_press)
+        
 
 
         self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
@@ -551,27 +613,41 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         clnp = DialogCleanUp() 
         res = clnp.exec()
         if (res == QtWidgets.QDialog.Accepted) :
-            mycleanupcode = clnp.getCode()
-            print(mycleanupcode)
-            clnp.saveCleanedUpData(mycleanupcode)
-            
-            self.dataTemperature = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
-            data_to_display_temp = pandasModel(self.dataTemperature)
-            self.tableViewTemperature.setModel(data_to_display_temp)
-            
-            
-            self.dataPressure = pd.read_csv('processed_pressure.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
-            data_to_display_press = pandasModel(self.dataPressure)
-            self.tableViewPressure.setModel(data_to_display_press)
+            try : 
+                mycleanupcode = clnp.getCode()
+                print(mycleanupcode)
+                clnp.saveCleanedUpData(mycleanupcode)
+                self.dataTemperature = pd.read_csv('processed_temperature.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+                data_to_display_temp = pandasModel(self.dataTemperature)
+                self.tableViewTemperature.setModel(data_to_display_temp)
+                
+                
+                self.dataPressure = pd.read_csv('processed_pressure.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+                data_to_display_press = pandasModel(self.dataPressure)
+                self.tableViewPressure.setModel(data_to_display_press)
 
+                self.plotViewTemp.setModel(data_to_display_temp)
+                self.plotViewTemp.plot()
 
-            self.layoutMeasuresTemp.addWidget(self.plotViewTemp)
-            self.plotViewTemp.setModel(data_to_display_temp)
-            self.plotViewTemp.plot()
-
-            self.layoutMeasuresTemp.addWidget(self.plotViewPress)
-            self.plotViewPress.setModel(data_to_display_press)
-            self.plotViewPress.plot()
+                self.plotViewPress.setModel(data_to_display_press)
+                self.plotViewPress.plot()
+            except TypeError as e:
+                msg = QtWidgets.QMessageBox()
+                msg.setWindowTitle("Error")
+                msg.setText(f"Error detected : {e}")
+                msg.setIcon(QtWidgets.QMessageBox.Warning)
+                msg.exec()
+                var = False  
+            except SyntaxError as e:
+                msg = QtWidgets.QMessageBox()
+                msg.setWindowTitle("Error")
+                msg.setText(f"Error detected : {e}")
+                msg.setIcon(QtWidgets.QMessageBox.Warning)
+                msg.exec()
+                var = False  
+            if not var :
+                self.cleanup()
+            
 
             
 
@@ -590,7 +666,7 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
             self.compdlg.exec()
             
 
-    def runmodel(self) :
+    def runmodel(self) : 
         dicParam = self.create_dicParam()
         print(dicParam)
         computeSolveTransi = self.create_computeSolveTransi()
@@ -620,12 +696,12 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         data_to_display_directTemp = pandasModel(self.dataDirectTemp)
 
         self.DirectViewMat = TimeSeriesPlotCanvas("Temperature's Matrix", "Time", 'MatrixTemp')
-        self.layoutDirect.addWidget(self.DirectViewMat)
+        self.gridLayoutTemp.addWidget(self.DirectViewMat)
         self.DirectViewMat.setModel(data_to_display_directTemp)
         self.DirectViewMat.plot()
 
         self.DirectViewDep = TimeSeriesPlotCanvas("Temperature profile", "Depth", 'DepthDirectTemp')
-        self.layoutDirect.addWidget(self.DirectViewDep)
+        self.gridLayoutTemp.addWidget(self.DirectViewDep)
         self.DirectViewDep.setModel(data_to_display_directTemp)
         self.DirectViewDep.plot()
 
@@ -633,12 +709,13 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
         data_to_display_directFlow = pandasModel(self.dataDirectFlow)
 
         self.DirectViewDepFlow = TimeSeriesPlotCanvas("Flow evolution", "Flow", 'DirectFlow')
-        self.layoutDirect.addWidget(self.DirectViewDepFlow)
+        self.gridLayoutFlux.addWidget(self.DirectViewDepFlow)
         self.DirectViewDepFlow.setModel(data_to_display_directFlow)
         self.DirectViewDepFlow.plot()
         
 
     def runinversion(self) :
+
         paramMCMC = self.create_paramMCMC()
         print(paramMCMC)
         self.col.compute_mcmc(nb_iter = paramMCMC[1], priors = paramMCMC[0], nb_cells = paramMCMC[2])
@@ -677,37 +754,51 @@ class DataPointView(QtWidgets.QDialog,From_DataPointView):
                 #df = pd.DataFrame(self.col.get_moinslog10K_quantile(quantile))
                 #df.to_csv(f'{self.path_point}/res_{param}_{quantile*100}.csv')
 
-        self.dataMoinslogK = pd.read_csv('res_all_moinslog10K.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        self.dataMoinslogK = pd.read_csv('res_all_moinslog10K.csv', sep=',', low_memory=False, skiprows=0)
         data_to_display_moinslog10K = pandasModel(self.dataMoinslogK)
 
         self.MCMCViewHistK = TimeSeriesPlotCanvas("- log K", None , 'HistK')
-        self.layoutInversion.addWidget(self.MCMCViewHistK)
+        self.gridLayoutInv.addWidget(self.MCMCViewHistK,0,0,1,1)
         self.MCMCViewHistK.setModel(data_to_display_moinslog10K)
         self.MCMCViewHistK.plot()
 
-        self.datalambda = pd.read_csv('res_all_lambda_s.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        self.datalambda = pd.read_csv('res_all_lambda_s.csv',sep=',', low_memory=False, skiprows=0)
         data_to_display_lambda = pandasModel(self.datalambda)
 
         self.MCMCViewHistlambda = TimeSeriesPlotCanvas("lambda s", None , 'Histlambda')
-        self.layoutInversion.addWidget(self.MCMCViewHistlambda)
+        self.gridLayoutInv.addWidget(self.MCMCViewHistlambda,0,1,1,1)
         self.MCMCViewHistlambda.setModel(data_to_display_lambda)
         self.MCMCViewHistlambda.plot()
 
-        self.datan = pd.read_csv('res_all_n.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        self.datan = pd.read_csv('res_all_n.csv', sep=',', low_memory=False, skiprows=0)
         data_to_display_n = pandasModel(self.datan)
 
         self.MCMCViewHistn = TimeSeriesPlotCanvas("n", None , 'Histn')
-        self.layoutInversion.addWidget(self.MCMCViewHistn)
+        self.gridLayoutInv.addWidget(self.MCMCViewHistn,1,0,1,1)
         self.MCMCViewHistn.setModel(data_to_display_n)
         self.MCMCViewHistn.plot()
 
-        self.datarho = pd.read_csv('res_all_rho_cs.csv', encoding='utf-8', sep=',', low_memory=False, skiprows=0)
+        self.datarho = pd.read_csv('res_all_rho_cs.csv',sep=',', low_memory=False, skiprows=0)
         data_to_display_rho = pandasModel(self.datarho)
 
         self.MCMCViewHistrho = TimeSeriesPlotCanvas("rho * cs", None , 'Histrho')
-        self.layoutInversion.addWidget(self.MCMCViewHistrho)
+        self.gridLayoutInv.addWidget(self.MCMCViewHistrho,1,1,1,1)
         self.MCMCViewHistrho.setModel(data_to_display_rho)
-        self.MCMCViewHistrho.plot()   
+        self.MCMCViewHistrho.plot()  
+
+        for quantile in self.compdlg.list_quantile :
+            self.dataDirectTemp = pd.read_csv(f'res_temps_{quantile*100}.csv', sep=',', low_memory=False, skiprows=0)
+            data_to_display_directTemp = pandasModel(self.dataDirectTemp)
+
+            self.DirectViewMat = TimeSeriesPlotCanvas(f"Temperature's Matrix Quantile = {quantile}", "Time", 'MatrixTempMCMC')
+            self.gridLayoutTempMCMC.addWidget(self.DirectViewMat,0,0,1,1)
+            self.DirectViewMat.setModel(data_to_display_directTemp)
+            self.DirectViewMat.plot()
+
+            self.DirectViewDep = TimeSeriesPlotCanvas(f"Temperature profile Quantile = {quantile}", "Depth", 'DepthDirectTempMCMC')
+            self.gridLayoutTempMCMC.addWidget(self.DirectViewDep,0,1,1,1)
+            self.DirectViewDep.setModel(data_to_display_directTemp)
+            self.DirectViewDep.plot()
 
     def string_to_date (self, str) :
         return(datetime.strptime(str,"%Y/%m/%d %H:%M:%S"))
